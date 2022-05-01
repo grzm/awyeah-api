@@ -1,0 +1,1 @@
+{:linters {:unused-private-var {:exclude [com.grzm.awyeah.client.shared/shared-http-client?]}}}

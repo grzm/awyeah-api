@@ -1,0 +1,132 @@
+# awyeah-api - aws-api for babashka
+
+Cognitect's [aws-api][] and [babashka][]. Aw yeah.
+
+**Alpha** Only gently tested.
+
+awyeah-api is _another_ Clojure library which provides programmatic
+access to AWS services from your Clojure **or babashka** program. Its
+_raison d'être_ is to be a drop-in replacement for Cognitect's
+brilliant [aws-api][] that will work from source with [babashka][].
+
+awyeah-api should work with `com.cognitect.aws/endpoints` and
+`com.cognitect.aws` service packages.
+
+* [aws-api][]
+* [API Docs](https://cognitect-labs.github.io/aws-api/)
+
+[aws-api]: https://github.com/cognitect-labs/aws-api
+[babashka]: https://babashka.org
+
+## Requirements
+
+Requires babashka 0.7.0 or later (clojure.spec.alpha support).
+
+## deps
+``` clojure
+com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
+                     :git/sha ""}
+```
+
+## In brief
+
+Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
+
+```clojure
+{:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.206"}
+        com.cognitect.aws/s3 {:mvn/version "822.2.1109.0"}
+        com.github.grzm/awyeah-api {:git/sha ""}}}
+```
+
+```clojure
+(require '[com.grzm.awyeah.client.api :as aws])
+
+(def sts (aws/client {:api :s3}))
+
+(def buckets (-> (aws/invoke sts {:op :ListBuckets})
+                 :Buckets))
+
+(prn buckets)
+```
+
+## Differences from aws-api
+
+The awyeah-api client does not auto-refresh AWS credentials. The
+aws-api behavior relies on features that aren't present in babashka,
+and I haven't figured out an alternative implementation of the
+behavior. My use case is short-lived scripts, where JVM start-up time
+can dwarf script execution time: credentials don't have much time to
+get stale. If I had longer-lived processes, start-up time wouldn't be
+an issue and I'd just use the Clojure.
+
+The [com.cognitect/http-client][] used by aws-api automatically
+uncompresses S3 objects if they have the appropriate content-type
+metadata in S3. I've chosen _not_ to replicate this behavior with the
+bundled HTTP client based on `java.net.http` as I think it's a bit of
+a misfeature to have enabled by default in a programmatic client
+library like this. (That said, that makes it less of a drop-in
+replacement, doesn't it? I may revisit this.)
+
+[com.cognitect/http-client]: https://search.maven.org/artifact/com.cognitect/http-client
+
+See [Porting Decisions](docs/porting-decisions.markdown) if you're
+interested in the nitty gritty or are wondering why I made some
+decision or other.
+
+## Development
+
+Get thee to a repl!
+
+```sh
+bb --classpath $(clojure -Spath -A:dev:test) nrepl-server 1138
+```
+
+## Testing
+
+Run the tests against a [LocalStack](https://localstack.cloud) Docker
+container.
+
+```sh
+bin/dc up
+bin/test
+bin/dc down
+```
+
+## Known infelicities
+
+### Reflection warnings
+
+There are currently a couple of reflection warnings I haven't sussed yet.
+
+```
+Reflection warning, com/grzm/awyeah/http_client.clj:116:34 - call to method timeout can't be resolved (target class is unknown).
+Reflection warning, com/grzm/awyeah/http_client.clj:114:5 - reference to field build can't be resolved.
+```
+
+### Lint warnings and errors
+
+There are a few lint warnings to be addressed.
+```
+src/com/grzm/awyeah/client/api.clj:94:94: error: com.grzm.awyeah.endpoint/fetch is called with 1 arg but expects 2
+src/com/grzm/awyeah/util.clj:126:10: error: Function arguments should be wrapped in vector.
+src/com/grzm/awyeah/util.clj:214:10: error: Function arguments should be wrapped in vector.
+```
+All three of these are present in the upstream aws-api library itself. The first may well be a bug in code that's not regularly exercised or tested. The latter two I think may be a misunderstanding in clj-kondo. But I haven't dug into either.
+
+
+## Copyright and License
+
+Mostly © 2015 Cognitect
+Parts © 2022 Michael Glaesemann
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

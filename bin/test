@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+cd "${repo_root}"
+bb --classpath $(clojure -Spath -A:dev:test) \
+   --main com.grzm.awyeah.client.api-test/run-tests
+
+clj -X:dev:test:clj
+
