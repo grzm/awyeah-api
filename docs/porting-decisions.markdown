@@ -33,18 +33,18 @@ and `cognitect.aws.credentials`. `ThreadLocal` is used in
 thread-safe][simple-date-format-bug]. As I'm not concerned with
 supporting pre-Java 8 versions, I've decided to use the thread-safe
 `java.time.format.DateTimeFormatter` rather than drop thread-safety
-work-arounds for `SimpleDateFormat` or implement them in some other
+workarounds for `SimpleDateFormat` or implement them in some other
 way.
 
 [simple-date-format-bug]: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4228335
 
-The cognitect.aws.util namespace is used throughout the aws-api
+The `cognitect.aws.util` namespace is used throughout the aws-api
 library, either directly or transitively.
 
 The balance of the unincluded classes are used in
 `cognitect.aws.credentials` to provide auto-refreshing of AWS
 credentials. As babashka is commonly used for short-lived scripts as
-opposed to long-running server applicatoins, rather than provide an
+opposed to long-running server applications, rather than provide an
 alternate implementation for credential refresh, I've chosen to omit
 this functionality. If credential auto-refresh is something I find
 _is_ useful in a babashka context some time in the future, a solution
@@ -67,12 +67,12 @@ interface based on the various HTTP clients included in babashka.
 
 #### java.net.http.HttpClient (Java 11, Java 12, Java 17)
 
-The java.net.http package, introduced in Java 11, includes
-java.net.http.HttpClient, a very nice http-client implementation. It's
+The `java.net.http` package, introduced in Java 11, includes
+`java.net.http.HttpClient`, a very nice HTTP client implementation. It's
 also included in babashka. The aws-api sets the `host` header and the
-host header in included in the signature for signed AWS requests.
+`host` header is included in the signature for signed AWS API requests.
 
-The java.net.http.HttpClient considers `host` a restricted header and
+The `java.net.http.HttpClient` considers `host` a restricted header and
 does not allow it to be set. Java 12 added the
 `jdk.httpclient.allowRestrictedHeaders` System property to allow
 `host` to be set.
@@ -98,14 +98,14 @@ That's not a very pretty solution, however, having to set a system
 property at the command line.
 
 The solution I've arrived at is to drop "host" from the headers in the
-http-client itself and not set it. The java.net.http.HttpRequest
+http-client itself and not set it. The `java.net.http.HttpRequest`
 builder sets the host from the value in the URI, which is the value we
-want anyway. The com.grzm.awyeah.client/Client instance builds a
-request map including "host" in the headers, creates the appropriate
-signture taking the "host" header into account, submits the request
-map to the com.grzm.awyeah.http-client, and the http-client just
-ignores the "host" header. The signature header included in the
-request map is set, and the "host" header is set by the HttpRequest
+want anyway. The `com.grzm.awyeah.client/Client` instance builds a
+request map including `host` in the headers, creates the appropriate
+signture taking the `host` header into account, submits the request
+map to the `com.grzm.awyeah.http-client`, and the http-client just
+ignores the `host` header. The signature header included in the
+request map is set, and the `host` header is set by the `HttpRequest`
 builder.
 
 ## Other considerations
@@ -136,9 +136,9 @@ deserialization, a pure Clojure library. Babashka includes
 [Cheshire]: https://github.com/dakrone/cheshire
 
 The Clojure source of `clojure.data.json` can be interpreted by sci,
-so I could include clojure.data.json as a dependency and use it
-as-is. The clojure.data.json usage in aws-api is easily replaced by
-Cheshire. Replacing clojure.data.json with Cheshire means one less
+so I could include `clojure.data.json` as a dependency and use it
+as-is. The `clojure.data.json` usage in aws-api is easily replaced by
+Cheshire. Replacing `clojure.data.json` with Cheshire means one less
 dependency to include, and we can leverage compiled code rather than
 interpreted. To isolate the library choice, I've extracted the
 library-specific calls in the `com.grzm.awyeah.json` namespace.
@@ -149,7 +149,6 @@ One thought would be to make the choice of JSON library a choice
 available to the awyeah-api library user, defining a protocol for the
 necessary functions. While interesting, that seems overkill for the
 desired use case at this time.
-
 
 ### Linting and Formatting
 
