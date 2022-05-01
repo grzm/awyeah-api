@@ -113,6 +113,11 @@ src/com/grzm/awyeah/util.clj:214:10: error: Function arguments should be wrapped
 ```
 All three of these are present in the upstream aws-api library itself. The first may well be a bug in code that's not regularly exercised or tested. The latter two I think may be a misunderstanding in clj-kondo. But I haven't dug into either.
 
+## Thanks
+
+Much thanks to [Michiel Borkent](https://michielborkent.nl) for
+babashka and providing support and guidance in getting the pieces in
+place (java.net.http and various other Java classes) to make this library possible.
 
 ## Copyright and License
 
