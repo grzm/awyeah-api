@@ -41,9 +41,9 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 ```clojure
 (require '[com.grzm.awyeah.client.api :as aws])
 
-(def sts (aws/client {:api :s3}))
+(def s3 (aws/client {:api :s3}))
 
-(def buckets (-> (aws/invoke sts {:op :ListBuckets})
+(def buckets (-> (aws/invoke s3 {:op :ListBuckets})
                  :Buckets))
 
 (prn buckets)
