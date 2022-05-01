@@ -18,6 +18,12 @@ awyeah-api should work with `com.cognitect.aws/endpoints` and
 [aws-api]: https://github.com/cognitect-labs/aws-api
 [babashka]: https://babashka.org
 
+### Acknowledgements (and disclaimer)
+
+This port is based on the great work done by the fine folks at
+Cognitect. I am not affiliated with Cognitect and this is not a
+Cognitect-distributed library.
+
 ## Requirements
 
 Requires babashka 0.7.0 or later (clojure.spec.alpha support).
@@ -135,6 +141,7 @@ place (java.net.http and various other Java classes) to make this library possib
 ## Copyright and License
 
 Mostly © 2015 Cognitect
+
 Parts © 2022 Michael Glaesemann
 
 Licensed under the Apache License, Version 2.0 (the "License");
