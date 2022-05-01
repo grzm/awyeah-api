@@ -32,10 +32,23 @@ com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
 
 Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 
+### `deps.edn`
 ```clojure
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.206"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1109.0"}
-        com.github.grzm/awyeah-api {:git/sha "156dd801906b9382308c081fc295ed18cab82d93"}}}
+        com.github.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
+                                    :git/sha "156dd801906b9382308c081fc295ed18cab82d93"}}}
+```
+
+### `bb.edn`
+Include [`org.babashka/spec.alpha`](https://github.com/babashka/spec.alpha)
+``` clojure
+{:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.206"}
+        com.cognitect.aws/s3 {:mvn/version "822.2.1109.0"}
+        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
+                             :git/sha "156dd801906b9382308c081fc295ed18cab82d93"}
+        org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
+                                 :git/sha "433b0778e2c32f4bb5d0b48e5a33520bee28b906"}}}
 ```
 
 ```clojure
@@ -78,7 +91,7 @@ decision or other.
 Get thee to a repl!
 
 ```sh
-bb --classpath $(clojure -Spath -A:dev:test) nrepl-server 1138
+bb --classpath $(clojure -Spath -A:bb:dev:test) nrepl-server 1138
 ```
 
 ## Testing
