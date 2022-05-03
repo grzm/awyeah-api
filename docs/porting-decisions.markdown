@@ -3,7 +3,7 @@
 The primary motivation for the port is compatibilty with
 babashka. Beyond compatibility, I also consider maintainability (ease
 of keeping the library up-to-date with changes to aws-api),
-performnance, ease-of-use, and personal aesthetics (am I happy with
+performance, ease-of-use, and personal aesthetics (am I happy with
 the resulting library?).
 
 ## Babashka compatibility
@@ -13,10 +13,10 @@ number of classes not included in babahska and depends on Cognitect's
 [com.cognitect/http-client][], a wrapper around the [Jetty HTTP
 Client][jetty-http-client].
 
-### Missing classes
-
 [com.cognitect/http-client]: https://search.maven.org/artifact/com.cognitect/http-client/1.0.111/jar
 [jetty-http-client]: https://www.eclipse.org/jetty/documentation/jetty-9/index.html#http-client
+
+### Missing classes
 
 The following classes used in aws-api are not included in
 babashka.
@@ -97,7 +97,7 @@ bb -Djdk.httpclient.allowRestrictedHeaders=host ...
 That's not a very pretty solution, however, having to set a system
 property at the command line.
 
-The solution I've arrived at is to drop "host" from the headers in the
+The solution I've arrived at is to drop `host` from the headers in the
 http-client itself and not set it. The `java.net.http.HttpRequest`
 builder sets the host from the value in the URI, which is the value we
 want anyway. The `com.grzm.awyeah.client/Client` instance builds a
@@ -110,10 +110,10 @@ builder.
 
 ## Other considerations
 
-From a maintainability perspective, it would be easiest stop after
-making the minimum changes for babashka compatibility. I could then
-use text tools like `diff` to easily identify differences between the
-source code in aws-api and awyeah-api.
+From a maintainability perspective, it would be easiest to stop after
+making the minimum changes required for babashka compatibility. I
+could then use text tools like `diff` to easily identify differences
+between the source code in aws-api and awyeah-api.
 
 ### `cognitect.dynaload/load-var` and `requiring-resolve`
 
@@ -122,13 +122,15 @@ to dynamically require and resolve the var referenced by a given
 symbol. Clojure 1.10 provides the same functionality with the
 `requiring-resolve` function. Given that `requiring-resolve` is
 compiled into the babashka image, I've chosen to replace `load-var`
-with `requiring-resolve` rather than relying on sci to interpret
-load-var at run-time.
+with `requiring-resolve` rather than relying on [sci][] to interpret
+`load-var` at run-time.
+
+[sci]: https://github.com/babashka/sci
 
 ### `clojure.data.json` and `cheshire`
 
 The aws-api library depends on
-[`clojure.data.json`][clojure.data.json] for JSON serializeation and
+[`clojure.data.json`][clojure.data.json] for JSON serialization and
 deserialization, a pure Clojure library. Babashka includes
 [Cheshire][] for JSON support and not `clojure.data.json`.
 
@@ -145,20 +147,17 @@ library-specific calls in the `com.grzm.awyeah.json` namespace.
 
 #### JSON-support injection
 
-One thought would be to make the choice of JSON library a choice
-available to the awyeah-api library user, defining a protocol for the
-necessary functions. While interesting, that seems overkill for the
-desired use case at this time.
+One thought would be to make the choice of JSON library available to
+the awyeah-api library user, defining a protocol for the necessary
+functions. While interesting, that seems overkill for the desired use
+case at this time.
 
 ### Linting and Formatting
 
-With respect to making awyeah-api easy to update with respect to
-upstream aws-api changes, it would make sense to limit the number of
-differences between awyeah-api and aws-api to the minimum required to
-make awyeah-api work with babashka. Changes such as whitespace
-formatting or removing unused bindings, or reordering requires don't
-affect the functionality of the code. However, these are important to
-me as a developer from a fit and finish perspective.
+Changes such as whitespace formatting or removing unused bindings, or
+reordering requires don't affect the functionality of the
+code. However, these are important to me as a developer from a fit and
+finish perspective.
 
 Frankly, I do struggle a bit with whether I _should_ value these as
 highly as I do, putting them above making maintenance as easy as
