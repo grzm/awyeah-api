@@ -161,7 +161,8 @@
                     (let [cause (.getCause ^Exception e)]
                       (if (instance? ExceptionInfo cause)
                         (throw cause)
-                        (throw e))))))))
+                        (throw e)))))))
+          (swap! pending-ops dec))
         (catch Throwable t
           (put! ch (merge (error->anomaly t) (select-keys request [::meta])))
           (swap! pending-ops dec))))
