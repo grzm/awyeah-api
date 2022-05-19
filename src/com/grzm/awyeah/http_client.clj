@@ -110,11 +110,13 @@
              (HttpRequest$BodyPublishers/ofByteArray (byte-buffer->byte-array body))
              (HttpRequest$BodyPublishers/noBody))
         builder (-> (HttpRequest/newBuilder uri)
-                    (.method ^String method bp))]
-    (.build (cond-> builder
-              (seq headers) (add-headers headers)
-              (::timeout-msec m) (.timeout (Duration/ofMillis
-                                             (::timeout-msec m)))))))
+                    (.method ^String method bp))
+        builder (if (seq headers) (add-headers builder headers) builder)
+        builder (if-let [timeout (::timeout-msec m)]
+                  (.timeout ^HttpRequest$Builder builder
+                            (Duration/ofMillis timeout))
+                  builder)]
+    (.build ^HttpRequest$Builder builder)))
 
 (defn error->anomaly [^Throwable t]
   {:cognitect.anomalies/category :cognitect.anomalies/fault
