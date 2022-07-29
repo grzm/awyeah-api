@@ -111,10 +111,11 @@
              (HttpRequest$BodyPublishers/noBody))
         builder (-> (HttpRequest/newBuilder uri)
                     (.method ^String method bp))]
-    (.build (cond-> builder
-              (seq headers) (add-headers headers)
-              (::timeout-msec m) (.timeout (Duration/ofMillis
-                                             (::timeout-msec m)))))))
+    (when (seq headers)
+      (add-headers builder headers))
+    (when (::timeout-msec m)
+      (.timeout builder (Duration/ofMillis (::timeout-msec m))))
+    (.build builder)))
 
 (defn error->anomaly [^Throwable t]
   {:cognitect.anomalies/category :cognitect.anomalies/fault

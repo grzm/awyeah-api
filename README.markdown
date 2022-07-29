@@ -113,15 +113,6 @@ bin/dc down
 
 ## Known infelicities
 
-### Reflection warnings
-
-There are currently a couple of reflection warnings I haven't sussed yet.
-
-```
-Reflection warning, com/grzm/awyeah/http_client.clj:116:34 - call to method timeout can't be resolved (target class is unknown).
-Reflection warning, com/grzm/awyeah/http_client.clj:114:5 - reference to field build can't be resolved.
-```
-
 ### Lint warnings and errors
 
 There are a few lint warnings to be addressed.
