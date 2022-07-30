@@ -159,10 +159,9 @@
               (.exceptionally
                 (reify Function
                   (apply [_ e]
-                    (let [cause (.getCause ^Exception e)]
-                      (if (instance? ExceptionInfo cause)
-                        (throw cause)
-                        (throw e)))))))
+                    (let [cause (.getCause ^Exception e)
+                          t (if (instance? ExceptionInfo cause) cause e)]
+                      (put! ch (merge (error->anomaly t) (select-keys request [::meta]))))))))
           (swap! pending-ops dec))
         (catch Throwable t
           (put! ch (merge (error->anomaly t) (select-keys request [::meta])))
