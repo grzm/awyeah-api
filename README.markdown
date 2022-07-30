@@ -42,8 +42,8 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 ```clojure
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.206"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1109.0"}
-        com.github.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                                    :git/sha "a3ce8c515c3c381fa46efea37ec680631641f52b"}}}
+        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
+                             :git/sha "a3ce8c515c3c381fa46efea37ec680631641f52b"}}}
 ```
 
 ### `bb.edn`
