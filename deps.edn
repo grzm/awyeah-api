@@ -13,9 +13,7 @@
     org.clojure/core.async {:mvn/version "1.5.648"}
     org.clojure/data.xml {:mvn/version "0.2.0-alpha6"}
     org.clojure/tools.logging {:mvn/version "1.2.4"}}
-   :main-opts ["-m" "cognitect.test-runner"]
-   :jvm-opts ["-Djdk.httpclient.allowRestrictedHeaders=host"]
-   :exec-fn cognitect.test-runner.api/test}
+   :jvm-opts ["-Djdk.httpclient.allowRestrictedHeaders=host"]}
   :dev
   {:extra-paths ["dev"]
    :extra-deps
@@ -29,7 +27,9 @@
     {:mvn/version "822.2.1122.0", :aws/serviceFullName "Amazon Simple Systems Manager (SSM)"}
     com.cognitect.aws/sts
     {:mvn/version "822.2.1109.0", :aws/serviceFullName "AWS Security Token Service"}}}
-  :test {:extra-paths ["test"]}
+  :test
+  {:extra-paths ["test"]
+   :exec-fn cognitect.test-runner.api/test}
   :lint-ns
   {:replace-deps {com.github.clojure-lsp/clojure-lsp {:mvn/version "2022.04.18-00.59.32"}}
    :exec-fn clojure-lsp.api/clean-ns!
