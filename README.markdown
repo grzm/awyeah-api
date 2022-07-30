@@ -31,7 +31,7 @@ Requires babashka 0.7.0 or later (clojure.spec.alpha support).
 ## deps
 ``` clojure
 com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                     :git/sha "a3ce8c515c3c381fa46efea37ec680631641f52b"}
+                     :git/sha "0fa7dd51f801dba615e317651efda8c597465af6"}
 ```
 
 ## In brief
@@ -43,7 +43,7 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.206"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1109.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "a3ce8c515c3c381fa46efea37ec680631641f52b"}}}
+                             :git/sha "0fa7dd51f801dba615e317651efda8c597465af6"}}}
 ```
 
 ### `bb.edn`
@@ -52,7 +52,7 @@ Include [`org.babashka/spec.alpha`](https://github.com/babashka/spec.alpha)
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.206"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1109.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "a3ce8c515c3c381fa46efea37ec680631641f52b"}
+                             :git/sha "0fa7dd51f801dba615e317651efda8c597465af6"}
         org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
                                  :git/sha "433b0778e2c32f4bb5d0b48e5a33520bee28b906"}}}
 ```
