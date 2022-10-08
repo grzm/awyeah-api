@@ -3,9 +3,12 @@
    [clojure.pprint :as pprint]
    [clojure.test :as test]))
 
+#?(:bb (taoensso.timbre/set-level! :info))
+
 (def test-namespaces
   '[com.grzm.awyeah.client.api-test
-    com.grzm.awyeah.client.api.localstack-test])
+    com.grzm.awyeah.client.api.localstack-test
+    com.grzm.awyeah.client-test])
 
 (defn run-tests
   ([]

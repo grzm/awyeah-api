@@ -22,7 +22,11 @@
   (-get-info [_] info))
 
 (defn client [client-meta info]
-  (with-meta (->Client info) @client-meta))
+  (let [region (some-> info :region-provider region/fetch)]
+    (-> (with-meta (->Client info) @client-meta)
+        (assoc :region region
+               :endpoint (some-> info :endpoint-provider (endpoint/fetch region))
+               :credentials (some-> info :credentials-provider credentials/fetch)))))
 
 (defmulti build-http-request
   "AWS request -> HTTP request."
