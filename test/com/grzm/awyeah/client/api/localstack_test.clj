@@ -1,4 +1,4 @@
-(ns com.grzm.awyeah.client.api-test
+(ns com.grzm.awyeah.client.api.localstack-test
   (:require
    [clojure.java.io :as io]
    [clojure.pprint :as pprint]
