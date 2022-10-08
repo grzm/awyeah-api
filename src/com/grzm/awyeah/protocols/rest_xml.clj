@@ -19,18 +19,8 @@
                          data
                          (or (:locationName shape) shape-name))))
 
-(comment
-  (defn spy-> [x label]
-    (tap> {label x})
-    x)
-
-  (add-tap prn)
-
-  :end)
-
 (defmethod client/build-http-request "rest-xml"
   [service op-map]
-  (tap> {:rest-xml.build-http-request/op-map op-map})
   (rest/build-http-request service op-map serialize))
 
 (defmethod client/parse-http-response "rest-xml"
