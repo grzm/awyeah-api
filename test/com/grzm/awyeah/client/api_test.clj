@@ -3,6 +3,7 @@
    [clojure.java.io :as io]
    [clojure.pprint :as pprint]
    [clojure.test :as test :refer [deftest is testing]]
+   [cognitect.anomalies :as-alias anom]
    [com.grzm.awyeah.client.api :as aws]
    [com.grzm.awyeah.credentials :as credentials]
    [com.grzm.awyeah.http.awyeah :as http.awyeah]))
@@ -106,7 +107,12 @@
         (let [{:keys [Body]} (aws/invoke s3 {:op :GetObject
                                              :request {:Bucket bucket-name
                                                        :Key farewell-key}})]
-          (is (= farewell-body (slurp Body))))))))
+          (is (= farewell-body (slurp Body)))))
+      (testing "HeadObject on non-existant object"
+        (is (= ::anom/not-found (::anom/category
+                                 (aws/invoke s3 {:op :HeadObject,
+                                                 :request {:Bucket bucket-name,
+                                                           :Key "no-such-object"}}))))))))
 
 (defn gen-label
   ([]

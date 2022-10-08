@@ -130,9 +130,14 @@
                              (first v))]))
        (into {})))
 
+(defn response-body?
+  [^HttpRequest http-request]
+  ((complement #{"HEAD"}) (.method http-request)))
+
 (defn response-map
-  [^HttpResponse http-response]
-  (let [body (.body http-response)]
+  [^HttpRequest http-request ^HttpResponse http-response]
+  (let [body (when (response-body? http-request)
+               (.body http-response))]
     (cond-> {:status (.statusCode http-response)
              :headers (header-map (.headers http-response))}
       body (assoc :body (ByteBuffer/wrap body)))))
@@ -154,7 +159,7 @@
               (.thenApply
                 (reify Function
                   (apply [_ http-response]
-                    (put! ch (merge (response-map http-response)
+                    (put! ch (merge (response-map http-request http-response)
                                     (select-keys request [::meta]))))))
               (.exceptionally
                 (reify Function
