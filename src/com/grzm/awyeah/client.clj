@@ -50,11 +50,7 @@
       {:cognitect.anomalies/category :cognitect.anomalies/fault
        ::throwable t})))
 
-(defn ^:private with-endpoint [req {:keys [protocol
-                                           hostname
-                                           port
-                                           path]
-                                    :as _endpoint}]
+(defn ^:private with-endpoint [req {:keys [protocol hostname port path]}]
   (cond-> (-> req
               (assoc-in [:headers "host"] hostname)
               (assoc :server-name hostname))

@@ -232,7 +232,7 @@
   (returned from :AssumeRole on aws sts client), a numeric value
   representing milliseconds since the epoch of 1970-01-01T00:00:00Z,
   or an Instant object."
-  [{:keys [Expiration] :as _credentials}]
+  [{:keys [Expiration]}]
   (if Expiration
     (-> (Instant/now)
         (Duration/between ^Instant (->instant Expiration))

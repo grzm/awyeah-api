@@ -38,7 +38,7 @@
        (.toString builder)))))
 
 (defn credential-scope
-  [{:keys [region service] :as _auth-info} request]
+  [{:keys [region service]} request]
   (str/join "/" [(->> (get-in request [:headers "x-amz-date"])
                       (util/parse-date util/x-amz-date-format)
                       (util/format-date util/x-amz-date-only-format))
@@ -121,7 +121,7 @@
                     (util/hex-encode (util/sha-256 bytes))])))
 
 (defn signing-key
-  [request {:keys [secret-access-key region service] :as _auth-info}]
+  [request {:keys [secret-access-key region service]}]
   (-> (.getBytes (str "AWS4" secret-access-key) "UTF-8")
       (util/hmac-sha-256 (->> (get-in request [:headers "x-amz-date"])
                               (util/parse-date util/x-amz-date-format)

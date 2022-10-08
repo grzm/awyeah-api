@@ -111,19 +111,6 @@ bin/test
 bin/dc down
 ```
 
-## Known infelicities
-
-### Lint warnings and errors
-
-There are a couple of lint warnings to be addressed.
-```
-src/com/grzm/awyeah/util.clj:126:10: error: Function arguments should be wrapped in vector.
-src/com/grzm/awyeah/util.clj:214:10: error: Function arguments should be wrapped in vector.
-```
-
-These are present in the upstream aws-api library itself. I think this
-may be a misunderstanding in clj-kondo. But I haven't dug into it.
-
 ## Thanks
 
 Much thanks to [Michiel Borkent](https://michielborkent.nl) for

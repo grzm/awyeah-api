@@ -125,7 +125,7 @@
   (->bbuf [data]))
 
 (extend-protocol BBuffable
-  (class (byte-array 0))
+  (Class/forName "[B")
   (->bbuf [bs] (ByteBuffer/wrap bs))
 
   String
@@ -218,7 +218,7 @@
   (base64-encode [data]))
 
 (extend-protocol Base64Encodable
-  (class (byte-array 0))
+  (Class/forName "[B")
   (base64-encode [ba] (.encodeToString (Base64/getEncoder) ba))
 
   ByteBuffer
