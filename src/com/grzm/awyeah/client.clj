@@ -17,17 +17,12 @@
 (defprotocol ClientSPI
   (-get-info [_] "Intended for internal use only"))
 
-(defprotocol ClientMeta
-  (client-meta [_])
-  (with-client-meta [_ m]))
-
-(defrecord Client [client-meta info]
-  ClientMeta
-  (client-meta [_] @client-meta)
-  (with-client-meta [this m] (swap! client-meta merge m) this)
-
+(defrecord Client [info]
   ClientSPI
   (-get-info [_] info))
+
+(defn client [client-meta info]
+  (with-meta (->Client info) @client-meta))
 
 (defmulti build-http-request
   "AWS request -> HTTP request."

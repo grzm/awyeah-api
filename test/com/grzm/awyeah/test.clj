@@ -4,7 +4,8 @@
    [clojure.test :as test]))
 
 (def test-namespaces
-  '[com.grzm.awyeah.client.api.localstack-test])
+  '[com.grzm.awyeah.client.api-test
+    com.grzm.awyeah.client.api.localstack-test])
 
 (defn run-tests
   ([]

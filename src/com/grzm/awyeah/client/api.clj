@@ -81,24 +81,25 @@
                             (get-in service [:metadata :endpointPrefix])
                             endpoint-override)]
     (dynaload/load-ns (symbol (str "com.grzm.awyeah.protocols." (get-in service [:metadata :protocol]))))
-    (client/->Client
-      (atom {'clojure.core.protocols/datafy (fn [c]
-                                              (let [i (client/-get-info c)]
-                                                (-> i
-                                                    (select-keys [:service])
-                                                    (assoc :region (-> i :region-provider region/fetch)
-                                                           :endpoint (-> i :endpoint-provider endpoint/fetch))
-                                                    (update :endpoint select-keys [:hostname :protocols :signatureVersions])
-                                                    (update :service select-keys [:metadata])
-                                                    (assoc :ops (ops c)))))})
-      {:service service
-       :retriable? (or retriable? retry/default-retriable?)
-       :backoff (or backoff retry/default-backoff)
-       :http-client http-client
-       :endpoint-provider endpoint-provider
-       :region-provider region-provider
-       :credentials-provider credentials-provider
-       :validate-requests? (atom nil)})))
+    (client/client
+        (atom {'clojure.core.protocols/datafy (fn [c]
+                                                (let [info (client/-get-info c)
+                                                      region (region/fetch (:region-provider info))
+                                                      endpoint (endpoint/fetch (:endpoint-provider info) region)]
+                                                  (-> info
+                                                      (select-keys [:service])
+                                                      (assoc :region region :endpoint endpoint)
+                                                      (update :endpoint select-keys [:hostname :protocols :signatureVersions])
+                                                      (update :service select-keys [:metadata])
+                                                      (assoc :ops (ops c)))))})
+        {:service service
+         :retriable? (or retriable? retry/default-retriable?)
+         :backoff (or backoff retry/default-backoff)
+         :http-client http-client
+         :endpoint-provider endpoint-provider
+         :region-provider region-provider
+         :credentials-provider credentials-provider
+         :validate-requests? (atom nil)})))
 
 (defn default-http-client
   "Create an http-client to share across multiple aws-api clients."
