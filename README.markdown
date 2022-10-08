@@ -115,13 +115,14 @@ bin/dc down
 
 ### Lint warnings and errors
 
-There are a few lint warnings to be addressed.
+There are a couple of lint warnings to be addressed.
 ```
-src/com/grzm/awyeah/client/api.clj:94:94: error: com.grzm.awyeah.endpoint/fetch is called with 1 arg but expects 2
 src/com/grzm/awyeah/util.clj:126:10: error: Function arguments should be wrapped in vector.
 src/com/grzm/awyeah/util.clj:214:10: error: Function arguments should be wrapped in vector.
 ```
-All three of these are present in the upstream aws-api library itself. The first may well be a bug in code that's not regularly exercised or tested. The latter two I think may be a misunderstanding in clj-kondo. But I haven't dug into either.
+
+These are present in the upstream aws-api library itself. I think this
+may be a misunderstanding in clj-kondo. But I haven't dug into it.
 
 ## Thanks
 
