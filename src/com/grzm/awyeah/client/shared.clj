@@ -1,3 +1,6 @@
+;; Copyright (c) Cognitect, Inc.
+;; All rights reserved.
+
 (ns com.grzm.awyeah.client.shared
   (:require
    [com.grzm.awyeah.credentials :as credentials]

@@ -7,7 +7,7 @@
   Common feature across the rest protocols (rest-json, rest-xml). "
   (:require
    [clojure.string :as str]
-   [com.grzm.awyeah.protocols.common :as common]
+   [com.grzm.awyeah.protocols :as aws.protocols]
    [com.grzm.awyeah.service :as service]
    [com.grzm.awyeah.shape :as shape]
    [com.grzm.awyeah.util :as util]))
@@ -167,7 +167,7 @@
                       :scheme :https
                       :server-port 443
                       :uri (get-in operation [:http :requestUri])
-                      :headers (common/headers service operation)}]
+                      :headers (aws.protocols/headers service operation)}]
     (if-not input-shape
       http-request
       (let [location->args (partition-args input-shape request)
@@ -250,7 +250,7 @@
         (parse-fn output-shape body-str)))))
 
 (defn parse-http-response
-  [service {:keys [op] :as _op-map} {:keys [status body] :as http-response}
+  [service {:keys [op]} {:keys [status body] :as http-response}
    parse-body-str
    parse-error]
   (if (:cognitect.anomalies/category http-response)

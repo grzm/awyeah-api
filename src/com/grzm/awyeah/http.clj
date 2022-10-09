@@ -1,3 +1,6 @@
+;; Copyright (c) Cognitect, Inc.
+;; All rights reserved.
+
 (ns ^:skip-wiki com.grzm.awyeah.http
   "Impl, don't call directly."
   (:require

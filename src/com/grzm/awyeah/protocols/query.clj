@@ -5,8 +5,7 @@
   "Impl, don't call directly."
   (:require
    [clojure.string :as str]
-   [com.grzm.awyeah.client :as client]
-   [com.grzm.awyeah.protocols.common :as common]
+   [com.grzm.awyeah.protocols :as aws.protocols]
    [com.grzm.awyeah.service :as service]
    [com.grzm.awyeah.shape :as shape]
    [com.grzm.awyeah.util :as util]))
@@ -95,16 +94,16 @@
      :scheme :https
      :server-port 443
      :uri "/"
-     :headers (common/headers service operation)
+     :headers (aws.protocols/headers service operation)
      :body (util/query-string
              (serialize input-shape request params []))}))
 
-(defmethod client/build-http-request "query"
+(defmethod aws.protocols/build-http-request "query"
   [service req-map]
   (build-query-http-request serialize service req-map))
 
 (defn build-query-http-response
-  [service {:keys [op] :as _op-map} {:keys [status body] :as http-response}]
+  [service {:keys [op]} {:keys [status body] :as http-response}]
   (let [operation (get-in service [:operations op])]
     (if (:cognitect.anomalies/category http-response)
       http-response
@@ -112,8 +111,8 @@
         (if-let [output-shape (service/shape service (:output operation))]
           (shape/xml-parse output-shape (util/bbuf->str body))
           (util/xml->map (util/xml-read (util/bbuf->str body))))
-        (common/xml-parse-error http-response)))))
+        (aws.protocols/xml-parse-error http-response)))))
 
-(defmethod client/parse-http-response "query"
+(defmethod aws.protocols/parse-http-response "query"
   [service op-map http-response]
   (build-query-http-response service op-map http-response))

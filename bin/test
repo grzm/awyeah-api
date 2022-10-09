@@ -5,9 +5,13 @@ set -euo pipefail
 repo_root="$(git rev-parse --show-toplevel)"
 
 cd "${repo_root}"
-echo "bb tests"
-bb --classpath $(clojure -Spath -A:bb:dev:test) \
-   --main com.grzm.awyeah.test/run-tests
+if [[ -z ${SKIP_BB+x} ]] ; then
+    echo "bb tests"
+    bb --main com.grzm.awyeah.test/run-tests
+else
+    echo "skipping bb tests"
+fi
 
+echo
 echo "clj tests"
 clj -X:dev:test:clj

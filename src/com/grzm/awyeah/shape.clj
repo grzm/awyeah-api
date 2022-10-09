@@ -381,7 +381,7 @@
   (let [member-shape (list-member-shape shape)]
     (if (:flattened shape)
       (mapv #(xml-serialize* member-shape % el-name) args)
-      (let [member-name (get member-shape :locationName"member")]
+      (let [member-name (get member-shape :locationName "member")]
         {:tag el-name
          :content (mapv #(xml-serialize* member-shape % member-name) args)}))))
 

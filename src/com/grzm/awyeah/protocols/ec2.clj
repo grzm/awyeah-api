@@ -4,7 +4,7 @@
 (ns ^:skip-wiki com.grzm.awyeah.protocols.ec2
   "Impl, don't call directly."
   (:require
-   [com.grzm.awyeah.client :as client]
+   [com.grzm.awyeah.protocols :as aws.protocols]
    [com.grzm.awyeah.protocols.query :as query]
    [com.grzm.awyeah.shape :as shape]
    [com.grzm.awyeah.util :as util]))
@@ -45,10 +45,10 @@
             serialized
             (map-indexed (fn [i member] [(inc i) member]) args))))
 
-(defmethod client/build-http-request "ec2"
+(defmethod aws.protocols/build-http-request "ec2"
   [service op-map]
   (query/build-query-http-request serialize service op-map))
 
-(defmethod client/parse-http-response "ec2"
+(defmethod aws.protocols/parse-http-response "ec2"
   [service op-map http-response]
   (query/build-query-http-response service op-map http-response))

@@ -10,26 +10,25 @@
    [clojure.string :as str]
    [com.grzm.awyeah.json :as json])
   (:import
-   (java.io InputStream)
    (java.io ByteArrayInputStream ByteArrayOutputStream)
+   (java.io InputStream)
    (java.net URLEncoder)
    (java.nio ByteBuffer)
-   (java.nio.charset Charset)
    (java.security MessageDigest)
    (java.time ZonedDateTime ZoneId)
    (java.time.format DateTimeFormatter)
+   (java.util Base64)
    (java.util Date)
    (java.util UUID)
-   (java.util Base64)
    (javax.crypto Mac)
    (javax.crypto.spec SecretKeySpec)))
 
 (set! *warn-on-reflection* true)
 
 (defn date-format
-  "Return a thread-safe UTC date format that can be used with `format-date` and `parse-date`."
+  "Return a thread-safe GMT date format that can be used with `format-date` and `parse-date`."
   [^String fmt]
-  (.withZone (DateTimeFormatter/ofPattern fmt) (ZoneId/of "UTC")))
+  (.withZone (DateTimeFormatter/ofPattern fmt) (ZoneId/of "GMT")))
 
 (defn format-date
   ([formatter]
@@ -167,12 +166,6 @@
 
     :else nil))
 
-(defn error-code [response-body]
-  (let [error (some->> (tree-seq coll? #(if (map? %) (vals %) %) response-body)
-                       (filter :Error)
-                       first)]
-    (some-> error (get-in [:Error :Code]))))
-
 (defn xml-write
   [e]
   (if (instance? String e)
@@ -208,12 +201,6 @@
                               (url-encode v)))
                        params))))
 
-(defn read-json
-  "Read readable as JSON. readable can be any valid input for
-  clojure.java.io/reader."
-  [readable]
-  (json/read-str (slurp readable)))
-
 (defprotocol Base64Encodable
   (base64-encode [data]))
 
@@ -241,8 +228,6 @@
       io/reader
       slurp
       (json/read-str)))
-
-(def ^Charset UTF8 (Charset/forName "UTF-8"))
 
 (defn md5
   "returns an MD5 hash of the content of bb as a byte array"

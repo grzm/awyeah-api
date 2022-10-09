@@ -4,11 +4,10 @@
 (ns com.grzm.awyeah.client.api
   "API functions for using a client to interact with AWS services."
   (:require
-   [clojure.core.async :as a]
    [clojure.string :as str]
    [clojure.tools.logging :as log]
-   [com.grzm.awyeah.client :as client]
-   [com.grzm.awyeah.client.api.async :as api.async] ;; implements multimethods
+   [com.grzm.awyeah.client.impl :as client]
+   [com.grzm.awyeah.client.protocol :as client.protocol]
    [com.grzm.awyeah.client.shared :as shared]
    [com.grzm.awyeah.credentials]
    [com.grzm.awyeah.dynaload :as dynaload]
@@ -85,24 +84,24 @@
                             endpoint-override)]
     (dynaload/load-ns (symbol (str "com.grzm.awyeah.protocols." (get-in service [:metadata :protocol]))))
     (client/client
-        (atom {'clojure.core.protocols/datafy (fn [c]
-                                                (let [info (client/-get-info c)
-                                                      region (region/fetch (:region-provider info))
-                                                      endpoint (endpoint/fetch (:endpoint-provider info) region)]
-                                                  (-> info
-                                                      (select-keys [:service])
-                                                      (assoc :region region :endpoint endpoint)
-                                                      (update :endpoint select-keys [:hostname :protocols :signatureVersions])
-                                                      (update :service select-keys [:metadata])
-                                                      (assoc :ops (ops c)))))})
-        {:service service
-         :retriable? (or retriable? retry/default-retriable?)
-         :backoff (or backoff retry/default-backoff)
-         :http-client http-client
-         :endpoint-provider endpoint-provider
-         :region-provider region-provider
-         :credentials-provider credentials-provider
-         :validate-requests? (atom nil)})))
+      (atom {'clojure.core.protocols/datafy (fn [c]
+                                              (let [info (client.protocol/-get-info c)
+                                                    region (region/fetch (:region-provider info))
+                                                    endpoint (endpoint/fetch (:endpoint-provider info) region)]
+                                                (-> info
+                                                    (select-keys [:service])
+                                                    (assoc :region region :endpoint endpoint)
+                                                    (update :endpoint select-keys [:hostname :protocols :signatureVersions])
+                                                    (update :service select-keys [:metadata])
+                                                    (assoc :ops (ops c)))))})
+      {:service service
+       :retriable? (or retriable? retry/default-retriable?)
+       :backoff (or backoff retry/default-backoff)
+       :http-client http-client
+       :endpoint-provider endpoint-provider
+       :region-provider region-provider
+       :credentials-provider credentials-provider
+       :validate-requests? (atom nil)})))
 
 (defn default-http-client
   "Create an http-client to share across multiple aws-api clients."
@@ -126,7 +125,28 @@
 
   Alpha. Subject to change."
   [client op-map]
-  (a/<!! (api.async/invoke client op-map)))
+  (client.protocol/-invoke client op-map))
+
+(defn invoke-async
+  "Package and send a request to AWS and return a channel which
+  will contain the result.
+
+  Supported keys in op-map:
+
+  :ch                   - optional, channel to deliver the result
+  :op                   - required, keyword, the op to perform
+  :request              - required only for ops that require them.
+  :retriable?           - optional, defaults to :retriable? on the client.
+                          See client.
+  :backoff              - optional, defaults to :backoff on the client.
+                          See client.
+
+  After invoking (com.grzm.awyeah.client.api/validate-requests true), validates
+  :request in op-map.
+
+  Alpha. Subject to change."
+  [client op-map]
+  (client.protocol/-invoke-async client op-map))
 
 (defn validate-requests
   "Given true, uses clojure.spec to validate all invoke calls on client.
@@ -134,22 +154,25 @@
   Alpha. Subject to change."
   ([client]
    (validate-requests client true))
-  ([client bool]
-   (api.async/validate-requests client bool)))
+  ([client validate-requests?]
+   (reset! (-> client client.protocol/-get-info :validate-requests?) validate-requests?)
+   (when validate-requests?
+     (service/load-specs (-> client client.protocol/-get-info :service)))
+   validate-requests?))
 
 (defn request-spec-key
   "Returns the key for the request spec for op.
 
   Alpha. Subject to change."
   [client op]
-  (service/request-spec-key (-> client client/-get-info :service) op))
+  (service/request-spec-key (-> client client.protocol/-get-info :service) op))
 
 (defn response-spec-key
   "Returns the key for the response spec for op.
 
   Alpha. Subject to change."
   [client op]
-  (service/response-spec-key (-> client client/-get-info :service) op))
+  (service/response-spec-key (-> client client.protocol/-get-info :service) op))
 
 (def ^:private pprint-ref (delay (requiring-resolve 'clojure.pprint/pprint)))
 (defn ^:skip-wiki pprint
@@ -164,7 +187,7 @@
   Alpha. Subject to change."
   [client]
   (->> client
-       client/-get-info
+       client.protocol/-get-info
        :service
        service/docs))
 
@@ -222,6 +245,4 @@
 
   Alpha. Subject to change."
   [aws-client]
-  (let [{:keys [http-client]} (client/-get-info aws-client)]
-    (when-not (#'shared/shared-http-client? http-client)
-      (http/stop http-client))))
+  (client.protocol/-stop aws-client))

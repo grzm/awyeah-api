@@ -4,8 +4,7 @@
 (ns ^:skip-wiki com.grzm.awyeah.protocols.rest-xml
   "Impl, don't call directly."
   (:require
-   [com.grzm.awyeah.client :as client]
-   [com.grzm.awyeah.protocols.common :as common]
+   [com.grzm.awyeah.protocols :as aws.protocols]
    [com.grzm.awyeah.protocols.rest :as rest]
    [com.grzm.awyeah.shape :as shape]))
 
@@ -19,14 +18,14 @@
                          data
                          (or (:locationName shape) shape-name))))
 
-(defmethod client/build-http-request "rest-xml"
+(defmethod aws.protocols/build-http-request "rest-xml"
   [service op-map]
   (rest/build-http-request service op-map serialize))
 
-(defmethod client/parse-http-response "rest-xml"
+(defmethod aws.protocols/parse-http-response "rest-xml"
   [service op-map http-response]
   (rest/parse-http-response service
                             op-map
                             http-response
                             shape/xml-parse
-                            common/xml-parse-error))
+                            aws.protocols/xml-parse-error))

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+cd "${repo_root}"
+
+clj-kondo --lint src
+clj-kondo --lint test
+ack --ignore-dir=bin \
+    --ignore-dir=.lsp \
+    --ignore-dir=.clj-kondo \
+    --ignore-dir=.cpcache \
+    --ignore-dir=docs \
+    --ignore-file=is:README.markdown \
+    --ignore-file=is:deps.edn \
+    'cognitect\.aws'

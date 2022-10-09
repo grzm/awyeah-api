@@ -4,8 +4,7 @@
 (ns ^:skip-wiki com.grzm.awyeah.protocols.rest-json
   "Impl, don't call directly."
   (:require
-   [com.grzm.awyeah.client :as client]
-   [com.grzm.awyeah.protocols.common :as common]
+   [com.grzm.awyeah.protocols :as aws.protocols]
    [com.grzm.awyeah.protocols.rest :as rest]
    [com.grzm.awyeah.shape :as shape]
    [com.grzm.awyeah.util :as util]))
@@ -34,14 +33,14 @@
   [_ shape data]
   (shape/format-date shape data))
 
-(defmethod client/build-http-request "rest-json"
+(defmethod aws.protocols/build-http-request "rest-json"
   [service op-map]
   (rest/build-http-request service op-map serialize))
 
-(defmethod client/parse-http-response "rest-json"
+(defmethod aws.protocols/parse-http-response "rest-json"
   [service op-map http-response]
   (rest/parse-http-response service
                             op-map
                             http-response
                             shape/json-parse
-                            common/json-parse-error))
+                            aws.protocols/json-parse-error))

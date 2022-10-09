@@ -5,7 +5,6 @@
   "Impl, don't call directly."
   (:require
    [clojure.string :as str]
-   [com.grzm.awyeah.client :as client]
    [com.grzm.awyeah.service :as service]
    [com.grzm.awyeah.util :as util])
   (:import
@@ -13,6 +12,11 @@
    (java.net URLDecoder)))
 
 (set! *warn-on-reflection* true)
+
+(defmulti sign-http-request
+  "Sign the HTTP request."
+  (fn [service _endpoint _credentials _http-request]
+    (get-in service [:metadata :signatureVersion])))
 
 (defn uri-encode
   "Escape (%XX) special characters in the string `s`.
@@ -156,14 +160,14 @@
                       (signed-headers req)
                       (signature auth-info req)))))
 
-(defmethod client/sign-http-request "v4"
+(defmethod sign-http-request "v4"
   [service endpoint credentials http-request]
   (v4-sign-http-request service endpoint credentials http-request))
 
-(defmethod client/sign-http-request "s3"
+(defmethod sign-http-request "s3"
   [service endpoint credentials http-request]
   (v4-sign-http-request service endpoint credentials http-request :content-sha256-header? true))
 
-(defmethod client/sign-http-request "s3v4"
+(defmethod sign-http-request "s3v4"
   [service endpoint credentials http-request]
   (v4-sign-http-request service endpoint credentials http-request :content-sha256-header? true))
