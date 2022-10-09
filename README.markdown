@@ -31,7 +31,7 @@ Requires babashka 0.7.0 or later (clojure.spec.alpha support).
 ## deps
 ``` clojure
 com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                     :git/sha "5e5410982498285b7153c99e852f855b92bf8485"
+                     :git/sha "1810bf624da2be58c77813106a1d51e32db11690"
                      :git/tag "v0.8.35"}
 ```
 
