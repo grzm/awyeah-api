@@ -48,6 +48,9 @@
 
   (-stop [_aws-client]))
 
+;; ->Client is intended for internal use
+(alter-meta! #'->Client assoc :skip-wiki true)
+
 (defn client
   "Given a map with :api and :ops, returns a test client that you can
   pass to `com.grzm.awyeah.client.api/invoke` and
