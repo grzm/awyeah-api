@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -eu
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+cd "${repo_root}"
+
+prefix=$(cat VERSION_PREFIX)
+suffix=$(bin/revision)
+version="${prefix}.${suffix}"
+
+git tag -a "v${version}" -m "Release ${version}"

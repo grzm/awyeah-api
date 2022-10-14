@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Returns the revision number used for deployment.
+
+set -eu
+
+revision=$(git --no-replace-objects describe --tags --match rev0)
+
+# Extract the version number from the string. Do this in two steps so
+# it is a little easier to understand.
+revision=${revision:5} # drop the first 5 characters
+revision=${revision:0:${#revision}-9} # drop the last 9 characters
+
+echo "${revision}"
