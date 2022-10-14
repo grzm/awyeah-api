@@ -19,6 +19,7 @@
    [com.grzm.awyeah.protocols.rest-xml]
    [com.grzm.awyeah.util :as util])
   (:import
+   (java.nio ByteBuffer)
    (java.util Date)))
 
 (s/fdef com.grzm.awyeah.util/query-string
@@ -435,3 +436,32 @@
                       "rest-xml"
                       "rest-json"]]
       (test-protocol protocol))))
+
+
+(deftest test-parse-http-error-response
+  (testing "parse JSON-encoded error response body"
+    (let [response {:status 401
+                    :body   (ByteBuffer/wrap (.getBytes "{\"FOO\": \"abc\"}" "UTF-8"))}
+          parsed-response (aws.protocols/parse-http-error-response response)]
+      (is (= {:FOO "abc" :cognitect.anomalies/category :cognitect.anomalies/incorrect}
+             parsed-response))
+      (testing "http response is included as metadata on returned parsed error response"
+        (is (= response (meta parsed-response))))))
+  (testing "parse XML-encoded response body - issue 218: AWS returns XML-encoded 404 response when JSON-encoding was expected"
+    (let [response {:status 404
+                    :body   (ByteBuffer/wrap (.getBytes "<UnknownOperationException/>" "UTF-8"))}
+          parsed-response (aws.protocols/parse-http-error-response response)]
+      (is (= {:UnknownOperationException nil
+              :UnknownOperationExceptionAttrs {}
+              :cognitect.anomalies/category :cognitect.anomalies/not-found}
+             parsed-response))
+      (testing "http response is included as metadata on returned parsed error response"
+        (is (= response (meta parsed-response))))))
+  (testing "parse response with empty body"
+    (let [response {:status 404
+                    :body   nil}
+          parsed-response (aws.protocols/parse-http-error-response response)]
+      (is (= {:cognitect.anomalies/category :cognitect.anomalies/not-found}
+             parsed-response))
+      (testing "http response is included as metadata on returned parsed error response"
+        (is (= response (meta parsed-response)))))))
