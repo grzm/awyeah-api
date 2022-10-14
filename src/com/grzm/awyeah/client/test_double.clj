@@ -3,7 +3,7 @@
 
 (ns com.grzm.awyeah.client.test-double
   "Provides a test implementation of the aws client, which can be passed
-  to the functions in the cognitect.aws.client.api ns."
+  to the functions in the com.grzm.awyeah.client.api ns."
   (:require
    [clojure.core.async :as a]
    [com.grzm.awyeah.client.protocol :as client.protocol]
