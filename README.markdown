@@ -31,11 +31,11 @@ Requires babashka 0.7.0 or later (clojure.spec.alpha support).
 ## deps
 ``` clojure
 com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                     :git/sha "1810bf624da2be58c77813106a1d51e32db11690"
-                     :git/tag "v0.8.35"}
+                     :git/sha "9257dc0159640e46803d69210cae838d411f1789"
+                     :git/tag "v0.8.41"}
 ```
 
-Up to date with `com.cognitect.aws/api {:mvn/version "0.8.596"}` (tagged 2022-09-16).
+Up to date with `com.cognitect.aws/api {:mvn/version "0.8.603"}` (tagged 2022-10-11).
 
 ## In brief
 
@@ -46,8 +46,8 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.307"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "1810bf624da2be58c77813106a1d51e32db11690"
-                             :git/tag "v0.8.35"}}}
+                             :git/sha "9257dc0159640e46803d69210cae838d411f1789"
+                             :git/tag "v0.8.41"}}}
 ```
 
 ### `bb.edn`
@@ -56,8 +56,8 @@ Include [`org.babashka/spec.alpha`](https://github.com/babashka/spec.alpha)
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.307"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "1810bf624da2be58c77813106a1d51e32db11690"
-                             :git/tag "v0.8.35"}
+                             :git/sha "9257dc0159640e46803d69210cae838d411f1789"
+                             :git/tag "v0.8.41"}
         org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
                                  :git/sha "8df0712896f596680da7a32ae44bb000b7e45e68"}}}
 ```
