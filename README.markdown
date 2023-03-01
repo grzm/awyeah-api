@@ -45,9 +45,7 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 ```clojure
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.307"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
-        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "1810bf624da2be58c77813106a1d51e32db11690"
-                             :git/tag "v0.8.35"}}}
+        com.github.grzm/awyeah-api {:git/tag "v0.8.41" :git/sha "9257dc0"}}}
 ```
 
 ### `bb.edn`
@@ -55,11 +53,8 @@ Include [`org.babashka/spec.alpha`](https://github.com/babashka/spec.alpha)
 ``` clojure
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.307"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
-        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "1810bf624da2be58c77813106a1d51e32db11690"
-                             :git/tag "v0.8.35"}
-        org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
-                                 :git/sha "8df0712896f596680da7a32ae44bb000b7e45e68"}}}
+        com.github.grzm/awyeah-api {:git/tag "v0.8.41" :git/sha "9257dc0"}
+        com.github.babashka/spec.alpha {:git/sha "8df0712896f596680da7a32ae44bb000b7e45e68"}}}
 ```
 
 ```clojure
