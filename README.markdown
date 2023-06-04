@@ -47,7 +47,12 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
         com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
                              :git/sha "9257dc0159640e46803d69210cae838d411f1789"
-                             :git/tag "v0.8.41"}}}
+                             :git/tag "v0.8.41"}
+        ;; dependencies included in babashka
+        cheshire/cheshire {:mvn/version "5.10.2"}
+        org.clojure/core.async {:mvn/version "1.5.648"}
+        org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}
+        org.clojure/tools.logging {:mvn/version "1.2.4"}}}
 ```
 
 ### `bb.edn`
