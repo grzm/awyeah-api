@@ -64,7 +64,7 @@
    :put "PUT"
    :head "HEAD"
    :delete "DELETE"
-   :path "PATCH"})
+   :patch "PATCH"})
 
 (defn byte-buffer->byte-array
   [^ByteBuffer bbuf]
