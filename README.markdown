@@ -31,8 +31,8 @@ Requires babashka 0.7.0 or later (clojure.spec.alpha support).
 ## deps
 ``` clojure
 com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                     :git/sha "9257dc0159640e46803d69210cae838d411f1789"
-                     :git/tag "v0.8.41"}
+                     :git/sha "084f671150f1221a823e2a4cee8b8873ac9dbcba"
+                     :git/tag "v0.8.48"}
 ```
 
 Up to date with `com.cognitect.aws/api {:mvn/version "0.8.603"}` (tagged 2022-10-11).
