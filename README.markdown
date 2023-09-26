@@ -131,7 +131,7 @@ place (java.net.http and various other Java classes) to make this library possib
 
 Mostly © 2015 Cognitect
 
-Parts © 2022 Michael Glaesemann
+Parts © 2022–2023 Michael Glaesemann
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
