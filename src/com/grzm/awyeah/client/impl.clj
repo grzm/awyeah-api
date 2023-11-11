@@ -129,7 +129,8 @@
 (defn client [client-meta info]
   (let [region (some-> info :region-provider region/fetch)]
     (-> (with-meta (->Client info) @client-meta)
-        (assoc :region region
+        (assoc :api (-> info :service :metadata :cognitect.aws/service-name)
+               :region region
                :endpoint (some-> info :endpoint-provider (endpoint/fetch region))
                :credentials (some-> info :credentials-provider credentials/fetch)
                :service (some-> info :service (select-keys [:metadata]))

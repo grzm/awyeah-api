@@ -60,8 +60,8 @@
   By default, all clients use shared http-client, credentials-provider, and
   region-provider instances which use a small collection of daemon threads.
 
-  Primarily for debugging, clients support keyword access for :region, :endpoint,
-  :credentials, :service (with :metadata), and :http-client.
+  Primarily for debugging, clients support keyword access for :api (String),
+  :region, :endpoint, :credentials, :service (with :metadata), and :http-client.
 
   Alpha. Subject to change."
   [{:keys [api region region-provider retriable? backoff credentials-provider endpoint-override http-client]
@@ -90,6 +90,7 @@
                                                     endpoint (endpoint/fetch (:endpoint-provider info) region)]
                                                 (-> info
                                                     (select-keys [:service])
+                                                    (assoc :api (-> info :service :metadata :cognitect.aws/service-name))
                                                     (assoc :region region :endpoint endpoint)
                                                     (update :endpoint select-keys [:hostname :protocols :signatureVersions])
                                                     (update :service select-keys [:metadata])
