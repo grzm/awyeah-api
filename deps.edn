@@ -11,7 +11,8 @@
   :dev
   {:extra-paths ["dev"]
    :extra-deps
-   {com.cognitect.aws/ec2
+   {com.amazonaws/aws-java-sdk {:mvn/version "1.12.344"}
+    com.cognitect.aws/ec2
     {:mvn/version "848.2.1413.0", :aws/serviceFullName "Amazon Elastic Compute Cloud"},
     com.cognitect.aws/endpoints {:mvn/version "1.1.12.504"}
     com.cognitect.aws/lambda {:mvn/version "848.2.1413.0", :aws/serviceFullName "AWS Lambda"},
