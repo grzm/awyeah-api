@@ -1,14 +1,14 @@
 {:paths ["resources" "src" "test/resources" "test/src"]
  :deps
  {org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
-                           :git/sha "8df0712896f596680da7a32ae44bb000b7e45e68"}
+                           :git/sha "1a841c4cc1d4f6dab7505a98ed2d532dd9d56b78"}
   com.cognitect.aws/ec2
-  {:mvn/version "822.2.1122.0", :aws/serviceFullName "Amazon Elastic Compute Cloud"},
-  com.cognitect.aws/endpoints {:mvn/version "1.1.12.192"}
-  com.cognitect.aws/lambda {:mvn/version "822.2.1122.0", :aws/serviceFullName "AWS Lambda"},
+  {:mvn/version "848.2.1413.0", :aws/serviceFullName "Amazon Elastic Compute Cloud"},
+  com.cognitect.aws/endpoints {:mvn/version "1.1.12.504"}
+  com.cognitect.aws/lambda {:mvn/version "848.2.1413.0", :aws/serviceFullName "AWS Lambda"},
   com.cognitect.aws/s3
-  {:mvn/version "822.2.1109.0", :aws/serviceFullName "Amazon Simple Storage Service"}
+  {:mvn/version "848.2.1413.0", :aws/serviceFullName "Amazon Simple Storage Service"}
   com.cognitect.aws/ssm
-  {:mvn/version "822.2.1122.0", :aws/serviceFullName "Amazon Simple Systems Manager (SSM)"}
+  {:mvn/version "848.2.1413.0", :aws/serviceFullName "Amazon Simple Systems Manager (SSM)"}
   com.cognitect.aws/sts
-  {:mvn/version "822.2.1109.0", :aws/serviceFullName "AWS Security Token Service"}}}
+  {:mvn/version "847.2.1387.0", :aws/serviceFullName "AWS Security Token Service"}}}

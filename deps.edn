@@ -2,9 +2,9 @@
  :aliases
  {:clj
   {:extra-deps
-   {cheshire/cheshire {:mvn/version "5.10.2"}
-    http-kit/http-kit {:mvn/version "2.6.0"}
-    org.clojure/core.async {:mvn/version "1.5.648"}
+   {cheshire/cheshire {:mvn/version "5.12.0"}
+    http-kit/http-kit {:mvn/version "2.7.0"}
+    org.clojure/core.async {:mvn/version "1.6.681"}
     org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}
     org.clojure/tools.logging {:mvn/version "1.2.4"}}
    :jvm-opts ["-Djdk.httpclient.allowRestrictedHeaders=host"]}
@@ -12,22 +12,22 @@
   {:extra-paths ["dev"]
    :extra-deps
    {com.cognitect.aws/ec2
-    {:mvn/version "822.2.1122.0", :aws/serviceFullName "Amazon Elastic Compute Cloud"},
-    com.cognitect.aws/endpoints {:mvn/version "1.1.12.192"}
-    com.cognitect.aws/lambda {:mvn/version "822.2.1122.0", :aws/serviceFullName "AWS Lambda"},
+    {:mvn/version "848.2.1413.0", :aws/serviceFullName "Amazon Elastic Compute Cloud"},
+    com.cognitect.aws/endpoints {:mvn/version "1.1.12.504"}
+    com.cognitect.aws/lambda {:mvn/version "848.2.1413.0", :aws/serviceFullName "AWS Lambda"},
     com.cognitect.aws/s3
-    {:mvn/version "822.2.1109.0", :aws/serviceFullName "Amazon Simple Storage Service"}
+    {:mvn/version "848.2.1413.0", :aws/serviceFullName "Amazon Simple Storage Service"}
     com.cognitect.aws/ssm
-    {:mvn/version "822.2.1122.0", :aws/serviceFullName "Amazon Simple Systems Manager (SSM)"}
+    {:mvn/version "848.2.1413.0", :aws/serviceFullName "Amazon Simple Systems Manager (SSM)"}
     com.cognitect.aws/sts
-    {:mvn/version "822.2.1109.0", :aws/serviceFullName "AWS Security Token Service"}}}
+    {:mvn/version "847.2.1387.0", :aws/serviceFullName "AWS Security Token Service"}}}
   :test
   {:extra-paths ["test/resources" "test/src"]
-   :extra-deps {commons-io/commons-io {:mvn/version "2.11.0"}
-                io.github.cognitect-labs/test-runner {:git/tag "v0.5.0" :git/sha "b3fd0d2"}
+   :extra-deps {commons-io/commons-io {:mvn/version "2.15.0"}
+                io.github.cognitect-labs/test-runner {:git/tag "v0.5.1" :git/sha "dfb30dd"}
                 org.clojure/test.check {:mvn/version "1.1.1"}}
    :exec-fn cognitect.test-runner.api/test}
   :lint-ns
-  {:replace-deps {com.github.clojure-lsp/clojure-lsp {:mvn/version "2022.04.18-00.59.32"}}
+  {:replace-deps {com.github.clojure-lsp/clojure-lsp {:mvn/version "2023.10.30-16.25.41"}}
    :exec-fn clojure-lsp.api/clean-ns!
    :exec-args {:dry? true}}}}

@@ -43,14 +43,14 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 
 ### `deps.edn`
 ```clojure
-{:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.307"}
-        com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
+{:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.504"}
+        com.cognitect.aws/s3 {:mvn/version "848.2.1413.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
                              :git/sha "9257dc0159640e46803d69210cae838d411f1789"
                              :git/tag "v0.8.41"}
         ;; dependencies included in babashka
-        cheshire/cheshire {:mvn/version "5.10.2"}
-        org.clojure/core.async {:mvn/version "1.5.648"}
+        cheshire/cheshire {:mvn/version "5.12.0"}
+        org.clojure/core.async {:mvn/version "1.6.681"}
         org.clojure/data.xml {:mvn/version "0.2.0-alpha8"}
         org.clojure/tools.logging {:mvn/version "1.2.4"}}}
 ```
@@ -58,13 +58,13 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 ### `bb.edn`
 Include [`org.babashka/spec.alpha`](https://github.com/babashka/spec.alpha)
 ``` clojure
-{:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.307"}
-        com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
+{:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.504"}
+        com.cognitect.aws/s3 {:mvn/version "848.2.1413.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
                              :git/sha "9257dc0159640e46803d69210cae838d411f1789"
                              :git/tag "v0.8.41"}
         org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
-                                 :git/sha "8df0712896f596680da7a32ae44bb000b7e45e68"}}}
+                                 :git/sha "1a841c4cc1d4f6dab7505a98ed2d532dd9d56b78"}}}
 ```
 
 ```clojure
