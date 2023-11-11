@@ -4,6 +4,7 @@
    [clojure.test :refer [deftest is testing]]
    [com.grzm.awyeah.client.api :as aws]
    [com.grzm.awyeah.client.impl-test :as client-test]
+   [com.grzm.awyeah.client.protocol :as client.protocol]
    [com.grzm.awyeah.client.test-double :as client.test]))
 
 (deftest test-test-client
@@ -70,4 +71,9 @@
   (testing "throws when instrumenting op unsupported by service"
     (is (thrown-with-msg? RuntimeException
                           #"Operation not supported"
-                          (client.test/client {:api :s3 :ops {:DoesNotExistInS3 {}}})))))
+                          (client.test/client {:api :s3 :ops {:DoesNotExistInS3 {}}}))))
+
+  (testing "supports limited keyword access"
+    (let [c (client.test/client {:api :s3})]
+      (is (= "s3" (:api c)))
+      (is (map? (:service c))))))

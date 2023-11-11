@@ -17,7 +17,7 @@
    :cognitect.anomalies/message  "No handler or response provided for op"
    :op op})
 
-(deftype Client [info handlers]
+(defrecord Client [info handlers]
   client.protocol/Client
   (-get-info [_] info)
 
@@ -69,13 +69,15 @@
   - will not validate response payloads"
   [{:keys [api ops]}]
   (let [service (service/service-description (name api))]
-    (->Client {:service service
-               :validate-requests? (atom true)}
-              (reduce-kv
-                (fn [m op response]
-                  (when-not (some-> service :operations op)
-                    (throw (ex-info "Operation not supported"
-                                    (validation/unsupported-op-anomaly service op))))
-                  (assoc m op (if (fn? response) response (constantly response))))
-                {}
-                ops))))
+    (-> (->Client {:service service
+                   :validate-requests? (atom true)}
+                  (reduce-kv
+                    (fn [m op response]
+                      (when-not (some-> service :operations op)
+                        (throw (ex-info "Operation not supported"
+                                        (validation/unsupported-op-anomaly service op))))
+                      (assoc m op (if (fn? response) response (constantly response))))
+                    {}
+                    ops))
+        (assoc :api (-> service :metadata :cognitect.aws/service-name)
+               :service service))))
