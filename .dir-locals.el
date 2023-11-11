@@ -1,1 +1,1 @@
-((nil . ((cider-clojure-cli-global-options . "-A:clj"))))
+((nil . ((cider-clojure-cli-aliases . ":clj"))))
