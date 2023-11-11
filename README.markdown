@@ -121,6 +121,15 @@ bin/test
 bin/dc down
 ```
 
+### Exclude Localstack tests
+
+Sometimes you want to run tests but you don't want to stand up
+Localstack. This is currently convenient only with JVM Clojure.
+
+```sh
+clj -X:clj:dev:test :excludes '[:localstack]'
+```
+
 ## Thanks
 
 Much thanks to [Michiel Borkent](https://michielborkent.nl) for

@@ -120,13 +120,13 @@
   ([as-of]
    (java.lang.Long/toString (.getEpochSecond as-of) 26)))
 
-(deftest awyeah-http-client-test
+(deftest ^:localstack awyeah-http-client-test
   (let [http-client (http.awyeah/create)
         label (str "java.net.http-" (gen-label))]
     (testing "java.net.http"
       (test-with-http-client http-client label))))
 
-(deftest default-client-test
+(deftest ^:localstack default-client-test
   (let [label (str "default-http-client-" (gen-label))]
     (testing "default-http-client"
       (test-with-http-client nil label))))
