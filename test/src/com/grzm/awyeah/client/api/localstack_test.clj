@@ -44,7 +44,7 @@
                         http-client (assoc :http-client http-client)))]
       (is (= #{:UserId :Account :Arn} (set (keys (aws/invoke sts {:op :GetCallerIdentity})))))))
 
-  (testing "ssm (json protocol"
+  (testing "ssm (json protocol)"
     (let [ssm (client (cond-> {:api :ssm}
                         http-client (assoc :http-client http-client)))
           root (str "/" label)
