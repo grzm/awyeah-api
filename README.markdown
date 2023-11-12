@@ -127,7 +127,27 @@ Sometimes you want to run tests but you don't want to stand up
 Localstack. This is currently convenient only with JVM Clojure.
 
 ```sh
-clj -X:clj:dev:test :excludes '[:localstack]'
+clj -X:clj:dev:test :excludes '[:integration]'
+```
+
+Some additional testing notes so I don't have to look up each time I
+do awyeah-api maintenance.
+
+Select namespaces to test:
+
+```sh
+clj -X:clj:dev:test :nses '[com.grzm.awyeah.util-test]'
+```
+
+#### Testing aws-api
+
+It's useful to run aws-api tests to compare behavior. These are run in
+an aws-api repo checkout.
+
+Selecting namespaces to test:
+
+```sh
+clj -M:dev:test -n cognitect.aws.util-test
 ```
 
 ## Thanks

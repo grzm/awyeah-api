@@ -14,6 +14,7 @@
     com.grzm.awyeah.credentials-test
     com.grzm.awyeah.ec2-metadata-utils-test
     com.grzm.awyeah.endpoint-test
+    com.grzm.awyeah.integration-test
     com.grzm.awyeah.interceptors-test
     com.grzm.awyeah.protocols-test
     com.grzm.awyeah.protocols.rest-test

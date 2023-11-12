@@ -5,23 +5,15 @@
    [clojure.test :as test :refer [deftest is testing]]
    [cognitect.anomalies :as-alias anom]
    [com.grzm.awyeah.client.api :as aws]
-   [com.grzm.awyeah.credentials :as credentials]
+   [com.grzm.awyeah.client.api.localstack-elf :as localstack-elf]
    [com.grzm.awyeah.http.awyeah :as http.awyeah]))
 
 (defn anomaly? [x]
   (when (and (map? x) (:cognitect.anomalies/category x))
     x))
 
-(def client-default-opts
-  {:credentials-provider (credentials/basic-credentials-provider
-                           {:access-key-id "ABC"
-                            :secret-access-key "XYZ"})
-   :endpoint-override {:protocol :http
-                       :hostname "localhost"
-                       :port 4566}})
-
 (defn client [opts]
-  (aws/client (merge client-default-opts opts)))
+  (aws/client (merge localstack-elf/client-default-opts opts)))
 
 (defn test-with-http-client
   [http-client label]
@@ -120,13 +112,13 @@
   ([as-of]
    (java.lang.Long/toString (.getEpochSecond as-of) 26)))
 
-(deftest ^:localstack awyeah-http-client-test
+(deftest ^:integration awyeah-http-client-test
   (let [http-client (http.awyeah/create)
         label (str "java.net.http-" (gen-label))]
     (testing "java.net.http"
       (test-with-http-client http-client label))))
 
-(deftest ^:localstack default-client-test
+(deftest ^:integration default-client-test
   (let [label (str "default-http-client-" (gen-label))]
     (testing "default-http-client"
       (test-with-http-client nil label))))
