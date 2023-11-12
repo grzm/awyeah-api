@@ -89,7 +89,10 @@
     credential-source]
    (if (and (not (str/blank? access-key-id))
             (not (str/blank? secret-access-key)))
-     credentials
+     (do
+       (when credential-source
+         (log/debug (str "Fetched credentials from " credential-source ".")))
+       credentials)
      (when credential-source
        (log/debug (str "Unable to fetch credentials from " credential-source "."))
        nil))))
@@ -119,8 +122,7 @@
                     (when-let [creds (fetch provider)]
                       (reset! cached-provider provider)
                       creds))
-                  providers))
-          "any source"))
+                  providers))))
       Stoppable
       (-stop [_] (run! -stop providers)))))
 

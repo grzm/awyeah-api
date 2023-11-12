@@ -4,6 +4,8 @@
 (ns com.grzm.awyeah.credentials-test
   (:require
    [clojure.java.io :as io]
+   #?@(:bb []
+       :clj [[clojure.tools.logging.test :refer [with-log logged?]]])
    [clojure.test :as t :refer [deftest testing use-fixtures is]]
    [com.grzm.awyeah.credentials :as credentials]
    [com.grzm.awyeah.ec2-metadata-utils :as ec2-metadata-utils]
@@ -38,6 +40,18 @@
       (is (= 1 @cnt)))
     (testing "The chain provider returns nil if none of the providers returns credentials."
       (is (nil? (credentials/fetch (credentials/chain-credentials-provider [p1])))))))
+
+#?(:bb nil
+   :clj
+   (deftest valid-credentials-test
+     (with-log
+       (credentials/valid-credentials nil "x provider")
+       (is (logged? 'com.grzm.awyeah.credentials :debug (str "Unable to fetch credentials from x provider."))))
+     (with-log
+       (credentials/valid-credentials {:aws/access-key-id "id"
+                                       :aws/secret-access-key "secret"}
+                                      "x provider")
+       (is (logged? 'com.grzm.awyeah.credentials :debug (str "Fetched credentials from x provider."))))))
 
 (deftest environment-credentials-provider-test
   (testing "required vars present"
