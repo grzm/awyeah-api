@@ -4,7 +4,7 @@
 (ns com.grzm.awyeah.ec2-metadata-utils-test
   (:require
    [clojure.core.async :as a]
-   [clojure.test :refer [deftest is use-fixtures]]
+   [clojure.test :refer [deftest is testing use-fixtures]]
    [com.grzm.awyeah.client.shared :as shared]
    [com.grzm.awyeah.ec2-metadata-utils :as ec2-metadata-utils]
    [com.grzm.awyeah.http :as http]
@@ -35,3 +35,9 @@
                               (doto (a/promise-chan)
                                 (a/>!! {:cognitect.anomalies/category :cognitect.anomalies/busy})))]
     (is (nil? (ec2-metadata-utils/get-ec2-instance-region *http-client*)))))
+
+(deftest request-map
+  (testing "port"
+    (is (= 443 (:server-port (#'ec2-metadata-utils/request-map (java.net.URI/create "https://169.254.169.254")))))
+    (is (= 80 (:server-port (#'ec2-metadata-utils/request-map (java.net.URI/create "http://169.254.169.254")))))
+    (is (= 8081 (:server-port (#'ec2-metadata-utils/request-map (java.net.URI/create "http://169.254.169.254:8081")))))))
