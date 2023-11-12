@@ -181,7 +181,7 @@
     :as _config}]
   (let [http-client (.build (-> (HttpClient/newBuilder)
                                 (.connectTimeout (Duration/ofMillis connect-timeout-msecs))
-                                (.followRedirects HttpClient$Redirect/NORMAL)))]
+                                (.followRedirects HttpClient$Redirect/NEVER)))]
     (->Client http-client (atom 0) pending-ops-limit)))
 
 (defn stop
