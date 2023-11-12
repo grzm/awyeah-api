@@ -7,15 +7,7 @@ repo_root="$(git rev-parse --show-toplevel)"
 docker_compose_yaml="${repo_root}/etc/docker-compose.yaml"
 
 _up () {
-    docker compose -f "${docker_compose_yaml}" up --detach
-
-    set +e
-    while
-        sleep 1
-        status="$(curl -s "localhost:${localstack_port}" | bb -e "(require '[cheshire.core :as json]) (-> (slurp *in*) (json/parse-string keyword) :status println)")"
-        [[ "running" != "${status}" ]]
-    do true; done
-    set -e
+    docker compose -f "${docker_compose_yaml}" up --pull always --detach --wait
 }
 
 op="${1}"
