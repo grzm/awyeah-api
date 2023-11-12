@@ -2,13 +2,15 @@
   (:require
    [clojure.core.async :as a]
    [clojure.data.xml :as xml]
+   [clojure.java.io :as io]
    [clojure.test :refer [deftest testing is]]
    [com.grzm.awyeah.client.api :as aws]
    [com.grzm.awyeah.client.impl :as client]
    [com.grzm.awyeah.client.protocol :as client.protocol]
    [com.grzm.awyeah.credentials :as creds]
    [com.grzm.awyeah.http :as http]
-   [com.grzm.awyeah.region :as region])
+   [com.grzm.awyeah.region :as region]
+   [com.grzm.awyeah.util :as util])
   (:import
    (java.nio ByteBuffer)))
 
@@ -165,3 +167,21 @@
            (:metadata (:service client))))
     (is (= (:http-client params)
            (:http-client client)))))
+
+(deftest read-input-stream-once
+  (let [retries (atom 3)
+        reqs (atom [])
+        client (aws/client (assoc params
+                                  :retriable? (fn [_]
+                                                (swap! retries dec)
+                                                (pos? @retries))
+                                  :http-client (reify http/HttpClient
+                                                 (-submit [_ req ch]
+                                                   (swap! reqs conj req)
+                                                   (a/go (a/>! ch :ok))
+                                                   ch)
+                                                 (-stop [_]))))]
+    (aws/invoke client {:op :PutObject :request {:Bucket "test-bucket"
+                                                 :Key "test-object"
+                                                 :Body (io/input-stream (.getBytes "test"))}})
+    (is (= #{"test"} (into #{} (map (comp util/bbuf->str :body)) @reqs)))))
