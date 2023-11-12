@@ -93,7 +93,8 @@
           (= "iso8601" timestampFormat)
           (parse-date* data
                        util/iso8601-date-format
-                       util/iso8601-msecs-date-format)
+                       util/iso8601-msecs-date-format
+                       util/iso8601-usecs-date-format)
           (int? data)
           (java.util.Date. (* 1000 ^int data))
           (double? data)
@@ -104,6 +105,7 @@
           (parse-date* data
                        util/iso8601-date-format
                        util/iso8601-msecs-date-format
+                       util/iso8601-usecs-date-format
                        util/rfc822-date-format))))
 
 ;; ----------------------------------------------------------------------------------------

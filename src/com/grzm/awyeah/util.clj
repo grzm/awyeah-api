@@ -58,6 +58,9 @@
 (def iso8601-msecs-date-format
   (date-format "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
 
+(def iso8601-usecs-date-format
+  (date-format "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"))
+
 (def rfc822-date-format
   (date-format "EEE, dd MMM yyyy HH:mm:ss z"))
 
