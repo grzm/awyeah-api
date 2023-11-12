@@ -1,4 +1,4 @@
-(ns com.grzm.awyeah.integration-test
+(ns com.grzm.awyeah.integration.s3-test
   (:require
    [clojure.java.io :as io]
    [clojure.test :refer [deftest is testing]]

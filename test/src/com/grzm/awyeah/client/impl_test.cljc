@@ -4,6 +4,10 @@
    [clojure.data.xml :as xml]
    [clojure.java.io :as io]
    [clojure.test :refer [deftest testing is]]
+   #?@(:bb []
+       :clj [[clojure.test.check.clojure-test :refer [defspec]]
+             [clojure.test.check.generators :as gen]
+             [clojure.test.check.properties :as prop]])
    [com.grzm.awyeah.client.api :as aws]
    [com.grzm.awyeah.client.impl :as client]
    [com.grzm.awyeah.client.protocol :as client.protocol]
@@ -42,6 +46,15 @@
   (testing "returns http-response if it is an anomaly"
     (is (= {:cognitect.anomalies/category :does-not-matter}
            (#'client/handle-http-response {} {} {:cognitect.anomalies/category :does-not-matter})))))
+#?(:bb :skip
+   :clj (defspec status-over-299-appears-in-response-body
+          (prop/for-all [status (gen/choose 300 599)]
+                        (= status (:cognitect.aws.http/status (#'client/handle-http-response {} {} {:status status}))))))
+
+#?(:bb :skip
+   :clj (defspec status-below-300-does-not-appear-in-response-body
+          (prop/for-all [status (gen/choose 200 299)]
+                        (nil? (:cognitect.aws.http/status (#'client/handle-http-response {} {} {:status status}))))))
 
 (def list-buckets-http-response
   (xml/indent-str
