@@ -8,7 +8,10 @@
    [com.grzm.awyeah.client.shared :as shared]
    [com.grzm.awyeah.ec2-metadata-utils :as ec2-metadata-utils]
    [com.grzm.awyeah.http :as http]
-   [com.grzm.awyeah.test.ec2-metadata-utils-server :as ec2-metadata-utils-server]))
+   [com.grzm.awyeah.test.ec2-metadata-utils-server :as ec2-metadata-utils-server]
+   [com.grzm.awyeah.util :as u])
+  (:import
+   (java.net URI)))
 
 (def ^:dynamic *test-server-port*)
 (def ^:dynamic *http-client*)
@@ -38,6 +41,10 @@
 
 (deftest request-map
   (testing "port"
-    (is (= 443 (:server-port (#'ec2-metadata-utils/request-map (java.net.URI/create "https://169.254.169.254")))))
-    (is (= 80 (:server-port (#'ec2-metadata-utils/request-map (java.net.URI/create "http://169.254.169.254")))))
-    (is (= 8081 (:server-port (#'ec2-metadata-utils/request-map (java.net.URI/create "http://169.254.169.254:8081")))))))
+    (is (= 443 (:server-port (#'ec2-metadata-utils/request-map (URI/create "https://169.254.169.254")))))
+    (is (= 80 (:server-port (#'ec2-metadata-utils/request-map (URI/create "http://169.254.169.254")))))
+    (is (= 8081 (:server-port (#'ec2-metadata-utils/request-map (URI/create "http://169.254.169.254:8081"))))))
+  (testing "auth token"
+    (is (nil? (get-in (#'ec2-metadata-utils/request-map (URI/create "http://localhost")) [:headers "Authorization"])))
+    (with-redefs [u/getenv {"AWS_CONTAINER_AUTHORIZATION_TOKEN" "this-is-the-token"}]
+      (is (#{"this-is-the-token"} (get-in (#'ec2-metadata-utils/request-map (URI/create "http://localhost")) [:headers "Authorization"]))))))
