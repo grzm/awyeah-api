@@ -35,7 +35,7 @@ com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
                      :git/tag "v0.8.79"}
 ```
 
-Up to date with `com.cognitect.aws/api {:mvn/version "0.8.603"}` (tagged 2022-10-11).
+Up to date with `com.cognitect.aws/api {:mvn/version "0.8.686"}` (tagged 2023-07-11).
 
 ## In brief
 
