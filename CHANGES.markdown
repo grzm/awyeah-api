@@ -1,5 +1,10 @@
 # awyeah-api
 
+## 0.8.79 / 0399fec / 2023-11-12
+
+* Catch up to aws-api 0.8.686 (2023-07-11)
+* Also include aws-api refactoring commits up to 5900e35 (2023-07-12)
+
 ## 0.8.48 / 084f671 / 2023-09-25
 
 * Fix spelling of :patch in http client implementation
