@@ -1,4 +1,7 @@
 # awyeah-api
+## 0.8.82 / 5ecad02 / 2023-11-14
+
+* Implement aws-api cached-credentials-with-auto-refresh
 
 ## 0.8.79 / 0399fec / 2023-11-12
 
