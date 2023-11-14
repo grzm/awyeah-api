@@ -11,7 +11,7 @@
    [com.grzm.awyeah.ec2-metadata-utils :as ec2-metadata-utils]
    [com.grzm.awyeah.ec2-metadata-utils-test :as ec2-metadata-utils-test]
    [com.grzm.awyeah.test.utils :as tu]
-   [com.grzm.awyeah.util :as util])
+   [com.grzm.awyeah.util :as u])
   (:import
    (java.time Instant)))
 
@@ -55,8 +55,8 @@
 
 (deftest environment-credentials-provider-test
   (testing "required vars present"
-    (with-redefs [util/getenv (tu/stub-getenv {"AWS_ACCESS_KEY_ID" "foo"
-                                               "AWS_SECRET_ACCESS_KEY" "bar"})]
+    (with-redefs [u/getenv (tu/stub-getenv {"AWS_ACCESS_KEY_ID" "foo"
+                                            "AWS_SECRET_ACCESS_KEY" "bar"})]
       (is (map? (credentials/fetch (credentials/environment-credentials-provider))))))
   (testing "required vars blank"
     (doall
@@ -67,23 +67,23 @@
                   "AWS_SECRET_ACCESS_KEY" "bar"}
                  {"AWS_ACCESS_KEY_ID" "foo"
                   "AWS_SECRET_ACCESS_KEY" ""}]]
-        (with-redefs [util/getenv (tu/stub-getenv env)]
+        (with-redefs [u/getenv (tu/stub-getenv env)]
           (let [p (credentials/environment-credentials-provider)]
             (is (nil? (credentials/fetch p)))))))))
 
 (deftest system-properites-credentials-provider-test
   (testing "all vars present"
-    (with-redefs [util/getProperty (tu/stub-getProperty {"aws.accessKeyId" "foo"
-                                                         "aws.secretKey" "bar"
-                                                         "aws.sessionToken" "baz"})]
+    (with-redefs [u/getProperty (tu/stub-getProperty {"aws.accessKeyId" "foo"
+                                                      "aws.secretKey" "bar"
+                                                      "aws.sessionToken" "baz"})]
       (is (= {:aws/access-key-id "foo"
               :aws/secret-access-key "bar"
               :aws/session-token "baz"}
              (credentials/fetch
                (credentials/system-property-credentials-provider))))))
   (testing "required vars present"
-    (with-redefs [util/getProperty (tu/stub-getProperty {"aws.accessKeyId" "foo"
-                                                         "aws.secretKey" "bar"})]
+    (with-redefs [u/getProperty (tu/stub-getProperty {"aws.accessKeyId" "foo"
+                                                      "aws.secretKey" "bar"})]
       (is (= {:aws/access-key-id "foo"
               :aws/secret-access-key "bar"
               :aws/session-token nil}
@@ -102,7 +102,7 @@
                     "aws.secretKey" ""}
                    {"aws.accessKeyId" "foo"
                     "aws.secretKey" " "}]]
-        (with-redefs [util/getProperty (tu/stub-getProperty props)]
+        (with-redefs [u/getProperty (tu/stub-getProperty props)]
           (let [p (credentials/system-property-credentials-provider)]
             (is (nil? (credentials/fetch p)))))))))
 
@@ -119,19 +119,19 @@
               :aws/session-token "TARDIGRADE_AWS_SESSION_TOKEN"}
              (credentials/fetch (credentials/profile-credentials-provider "tardigrade" test-config)))))
     (testing "uses env vars and sys props for credentials file location and profile"
-      (with-redefs [util/getenv (tu/stub-getenv {"AWS_CREDENTIAL_PROFILES_FILE" test-config})]
+      (with-redefs [u/getenv (tu/stub-getenv {"AWS_CREDENTIAL_PROFILES_FILE" test-config})]
         (is (= {:aws/access-key-id "DEFAULT_AWS_ACCESS_KEY"
                 :aws/secret-access-key "DEFAULT_AWS_SECRET_ACCESS_KEY"
                 :aws/session-token nil}
                (credentials/fetch (credentials/profile-credentials-provider)))))
-      (with-redefs [util/getenv (tu/stub-getenv {"AWS_CREDENTIAL_PROFILES_FILE" test-config
-                                                 "AWS_PROFILE" "tardigrade"})]
+      (with-redefs [u/getenv (tu/stub-getenv {"AWS_CREDENTIAL_PROFILES_FILE" test-config
+                                              "AWS_PROFILE" "tardigrade"})]
         (is (= {:aws/access-key-id "TARDIGRADE_AWS_ACCESS_KEY"
                 :aws/secret-access-key "TARDIGRADE_AWS_SECRET_ACCESS_KEY"
                 :aws/session-token "TARDIGRADE_AWS_SESSION_TOKEN"}
                (credentials/fetch (credentials/profile-credentials-provider)))))
-      (with-redefs [util/getenv (tu/stub-getenv {"AWS_CREDENTIAL_PROFILES_FILE" test-config})
-                    util/getProperty (tu/stub-getProperty {"aws.profile" "tardigrade"})]
+      (with-redefs [u/getenv (tu/stub-getenv {"AWS_CREDENTIAL_PROFILES_FILE" test-config})
+                    u/getProperty (tu/stub-getProperty {"aws.profile" "tardigrade"})]
         (is (= {:aws/access-key-id "TARDIGRADE_AWS_ACCESS_KEY"
                 :aws/secret-access-key "TARDIGRADE_AWS_SECRET_ACCESS_KEY"
                 :aws/session-token "TARDIGRADE_AWS_SESSION_TOKEN"}
@@ -139,8 +139,8 @@
 
 (deftest container-credentials-provider-test
   (testing "The provider reads container metadata correctly."
-    (with-redefs [util/getenv (tu/stub-getenv {ec2-metadata-utils/container-credentials-relative-uri-env-var
-                                               ec2-metadata-utils/security-credentials-path})]
+    (with-redefs [u/getenv (tu/stub-getenv {ec2-metadata-utils/container-credentials-relative-uri-env-var
+                                            ec2-metadata-utils/security-credentials-path})]
       (let [creds (credentials/fetch (credentials/container-credentials-provider
                                        ec2-metadata-utils-test/*http-client*))]
         (is (= {:aws/access-key-id "foobar"
@@ -148,10 +148,10 @@
                 :aws/session-token "norealvalue"}
                (dissoc creds ::credentials/ttl)))
         (is (integer? (::credentials/ttl creds)))))
-    (with-redefs [util/getenv (tu/stub-getenv {ec2-metadata-utils/container-credentials-full-uri-env-var
-                                               (str "http://localhost:"
-                                                    ec2-metadata-utils-test/*test-server-port*
-                                                    ec2-metadata-utils/security-credentials-path)})]
+    (with-redefs [u/getenv (tu/stub-getenv {ec2-metadata-utils/container-credentials-full-uri-env-var
+                                            (str "http://localhost:"
+                                                 ec2-metadata-utils-test/*test-server-port*
+                                                 ec2-metadata-utils/security-credentials-path)})]
       (let [creds (credentials/fetch (credentials/container-credentials-provider
                                        ec2-metadata-utils-test/*http-client*))]
         (is (= {:aws/access-key-id "foobar"
@@ -169,6 +169,23 @@
               :aws/session-token "norealvalue"}
              (dissoc creds ::credentials/ttl)))
       (is (integer? (::credentials/ttl creds))))))
+
+(deftest auto-refresh-test
+  (let [cnt (atom 0)
+        p (reify credentials/CredentialsProvider
+            (credentials/fetch [_]
+              (swap! cnt inc)
+              {:aws/access-key-id "id"
+               :aws/secret-access-key "secret"
+               ::credentials/ttl 1}))
+        creds (credentials/cached-credentials-with-auto-refresh p)]
+    (credentials/fetch creds)
+    (Thread/sleep 2500)
+    (let [refreshed @cnt]
+      (credentials/stop creds)
+      (Thread/sleep 1000)
+      (is (= 3 refreshed) "The credentials have been refreshed.")
+      (is (= refreshed @cnt) "We stopped the auto-refreshing process."))))
 
 (deftest basic-credentials-provider
   (is (= {:aws/access-key-id "foo"

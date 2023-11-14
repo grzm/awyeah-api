@@ -14,8 +14,14 @@
    [com.grzm.awyeah.util :as u])
   (:import
    (java.io File)
-   (java.time Duration Instant)
-   (java.util Date)))
+   (java.time Duration
+              Instant)
+   (java.util Date)
+   (java.util.concurrent Executors
+                         Future
+                         ScheduledExecutorService
+                         ThreadFactory
+                         TimeUnit)))
 
 (set! *warn-on-reflection* true)
 
@@ -27,7 +33,8 @@
 
     :aws/access-key-id                      string  required
     :aws/secret-access-key                  string  required
-    :aws/session-token                      string  optional"))
+    :aws/session-token                      string  optional
+    :cognitect.aws.credentials/ttl          number  optional  Time-to-live in seconds"))
 
 (defprotocol Stoppable
   (-stop [_]))
@@ -38,22 +45,45 @@
 
 ;; Credentials subsystem
 
+(defonce ^:private scheduled-executor-service
+  (delay
+    (Executors/newScheduledThreadPool 1 (reify ThreadFactory
+                                          (newThread [_ r]
+                                            (doto (Thread. r)
+                                              (.setName "cognitect.aws-api.credentials-provider")
+                                              (.setDaemon true)))))))
+
 (defn ^:skip-wiki refresh!
   "For internal use. Don't call directly.
 
   Invokes `(fetch provider)`, resets the `credentials-atom` with and
   returns the result.
 
+  If the result includes a ::ttl, schedules a refresh after ::ttl
+  seconds using `scheduler`, resetting `scheduled-refresh` with the
+  resulting `ScheduledFuture`.
+
   If the credentials returned by the provider are not valid, resets
   both atoms to nil and returns nil."
-  [credentials-atom provider]
+  [credentials-atom scheduled-refresh-atom provider scheduler]
   (try
-    (let [new-creds (fetch provider)]
+    (let [{:keys [::ttl] :as new-creds} (fetch provider)]
+      (reset! scheduled-refresh-atom
+              (when ttl
+                #?(:bb (.schedule ^ScheduledExecutorService scheduler
+                                  #(refresh! credentials-atom scheduled-refresh-atom provider scheduler)
+                                  ^long ttl
+                                  TimeUnit/SECONDS)
+                   :clj (.schedule ^ScheduledExecutorService scheduler
+                                   ^Runnable #(refresh! credentials-atom scheduled-refresh-atom provider scheduler)
+                                   ^long ttl
+                                   TimeUnit/SECONDS))))
       (reset! credentials-atom new-creds))
     (catch Throwable t
+      (reset! scheduled-refresh-atom nil)
       (log/error t "Error fetching credentials."))))
 
-(defn cached-credentials
+(defn cached-credentials-with-auto-refresh
   "Returns a CredentialsProvider which wraps `provider`, caching
   credentials returned by `fetch`, and auto-refreshing the cached
   credentials in a background thread when the credentials include a
@@ -66,20 +96,34 @@
   ScheduledExecutorService.
 
   Alpha. Subject to change."
-  [provider]
-  (let [credentials-atom (atom nil)]
-    (reify
-      CredentialsProvider
-      (fetch [_]
-        (or @credentials-atom
-            (refresh! credentials-atom provider)))
-      Stoppable
-      (-stop [_]
-        (-stop provider)))))
+  ([provider]
+   (cached-credentials-with-auto-refresh provider @scheduled-executor-service))
+  ([provider scheduler]
+   (let [credentials-atom (atom nil)
+         scheduled-refresh-atom (atom nil)]
+     (reify
+       CredentialsProvider
+       (fetch [_]
+         (or @credentials-atom
+             (refresh! credentials-atom scheduled-refresh-atom provider scheduler)))
+       Stoppable
+       (-stop [_]
+         (-stop provider)
+         (when-let [r @scheduled-refresh-atom]
+           (.cancel ^Future r true)))))))
+
+(defn ^:deprecated auto-refreshing-credentials
+  "Deprecated. Use cached-credentials-with-auto-refresh"
+  ([provider] (cached-credentials-with-auto-refresh provider))
+  ([provider scheduler] (cached-credentials-with-auto-refresh provider scheduler)))
 
 (defn stop
-  "no-op"
-  [_credentials])
+  "Stop auto-refreshing the credentials.
+
+  Alpha. Subject to change."
+  [credentials]
+  (-stop credentials)
+  nil)
 
 (defn ^:skip-wiki valid-credentials
   "For internal use. Don't call directly."
@@ -141,7 +185,7 @@
 
   Alpha. Subject to change."
   []
-  (cached-credentials
+  (cached-credentials-with-auto-refresh
     (reify CredentialsProvider
       (fetch [_]
         (valid-credentials
@@ -164,7 +208,7 @@
 
   Alpha. Subject to change. "
   []
-  (cached-credentials
+  (cached-credentials-with-auto-refresh
     (reify CredentialsProvider
       (fetch [_]
         (valid-credentials
@@ -198,7 +242,7 @@
                                                   (some-> (u/getenv "AWS_CREDENTIAL_PROFILES_FILE") io/file) ;; java sdk v1
                                                   (io/file (u/getProperty "user.home") ".aws" "credentials"))))
   ([profile-name ^File f]
-   (cached-credentials
+   (cached-credentials-with-auto-refresh
      (reify CredentialsProvider
        (fetch [_]
          (when (.exists f)
@@ -252,7 +296,7 @@
 
   Alpha. Subject to change."
   [http-client]
-  (cached-credentials
+  (cached-credentials-with-auto-refresh
     (reify CredentialsProvider
       (fetch [_]
         (when-let [creds (ec2/container-credentials http-client)]
@@ -273,7 +317,7 @@
 
   Alpha. Subject to change."
   [http-client]
-  (cached-credentials
+  (cached-credentials-with-auto-refresh
     (reify CredentialsProvider
       (fetch [_]
         (when-let [creds (ec2/instance-credentials http-client)]
