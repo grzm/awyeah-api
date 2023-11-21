@@ -13,6 +13,7 @@
    (java.net URI)
    (java.net.http HttpClient
                   HttpClient$Redirect
+                  HttpClient$Version
                   HttpHeaders
                   HttpRequest
                   HttpRequest$Builder
@@ -180,6 +181,7 @@
          pending-ops-limit 64}
     :as _config}]
   (let [http-client (.build (-> (HttpClient/newBuilder)
+                                (.version HttpClient$Version/HTTP_1_1)
                                 (.connectTimeout (Duration/ofMillis connect-timeout-msecs))
                                 (.followRedirects HttpClient$Redirect/NEVER)))]
     (->Client http-client (atom 0) pending-ops-limit)))
