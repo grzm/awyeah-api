@@ -1,4 +1,11 @@
 # awyeah-api
+
+## 0.8.84 / e551334 / 2023-12-02
+
+* Force HTTP client to use HTTP Version 1.1
+  Fixes invalid request signing for AWS services that support HTTP 2 (https://github.com/grzm/awyeah-api/issues/8)
+  Thanks, Josh Glover, for the detailed report!
+
 ## 0.8.82 / 5ecad02 / 2023-11-14
 
 * Implement aws-api cached-credentials-with-auto-refresh
