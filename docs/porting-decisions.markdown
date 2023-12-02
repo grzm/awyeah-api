@@ -18,42 +18,31 @@ Client][jetty-http-client].
 
 ### Missing classes
 
-The following classes used in aws-api are not included in
-babashka.
-
-* `java.lang.Runnable`
-* `java.lang.ThreadLocal`
-* `java.util.concurrent.ThreadFactory`
-* `java.util.concurrent.ScheduledFuture`
-* `java.util.concurrent.ScheduledExecutorService`
-
-These classes are referenced in two namespaces: `cognitect.aws.util`
-and `cognitect.aws.credentials`. `ThreadLocal` is used in
-`cognitect.aws.util` to make [`java.text.SimpleDateFormat`
-thread-safe][simple-date-format-bug]. As I'm not concerned with
-supporting pre-Java 8 versions, I've decided to use the thread-safe
-`java.time.format.DateTimeFormatter` rather than drop thread-safety
-workarounds for `SimpleDateFormat` or implement them in some other
-way.
+The `java.lang.ThreadLocal` class, used in aws-api, is not included in
+babashka. `ThreadLocal` is used in `cognitect.aws.util` to make
+[`java.text.SimpleDateFormat` thread-safe][simple-date-format-bug]. As
+I'm not concerned with supporting pre-Java 8 versions, I've decided to
+use the thread-safe `java.time.format.DateTimeFormatter` rather than
+drop thread-safety workarounds for `SimpleDateFormat` or implement
+them in some other way.
 
 [simple-date-format-bug]: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4228335
 
 The `cognitect.aws.util` namespace is used throughout the aws-api
 library, either directly or transitively.
 
-The balance of the unincluded classes are used in
-`cognitect.aws.credentials` to provide auto-refreshing of AWS
-credentials. As babashka is commonly used for short-lived scripts as
-opposed to long-running server applications, rather than provide an
-alternate implementation for credential refresh, I've chosen to omit
-this functionality. If credential auto-refresh is something I find
-_is_ useful in a babashka context some time in the future, a solution
-can be explored at that time.
-
 There are a few other compatiblity issues, such as the use of
 `java.lang.ClassLoader::getResources` in
 `cognitect.aws.http/configured-client`, and replacing `^int x` hinting
 with explicit `(int x)` casts.
+
+#### Babashka, forward always
+
+At the time of the initial release of awyeah-api, babashka did not
+include classes required to implement the auto-refresh credentials
+functionality. Michiel is always improving babashka, and has since
+included these classes so I've been able to implement credentials
+auto-refresh as of v0.8.82/5ecad02.
 
 ### http-client
 

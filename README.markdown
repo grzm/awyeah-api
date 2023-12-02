@@ -2,8 +2,6 @@
 
 Cognitect's [aws-api][] and [babashka][]. Aw yeah.
 
-**Alpha** Only gently tested.
-
 awyeah-api is _another_ Clojure library which provides programmatic
 access to AWS services from your Clojure **or babashka** program. Its
 _raison d'être_ is to be a drop-in replacement for Cognitect's
@@ -26,7 +24,7 @@ Cognitect-distributed library.
 
 ## Requirements
 
-Requires babashka 0.7.0 or later (clojure.spec.alpha support).
+Requires babashka v1.0.170 or later (vjava.util.concurrent.ThreadFactory support).
 
 ## deps
 ``` clojure
@@ -79,14 +77,6 @@ Include [`org.babashka/spec.alpha`](https://github.com/babashka/spec.alpha)
 ```
 
 ## Differences from aws-api
-
-The awyeah-api client does not auto-refresh AWS credentials. The
-aws-api behavior relies on features that aren't present in babashka,
-and I haven't figured out an alternative implementation of the
-behavior. My use case is short-lived scripts, where JVM start-up time
-can dwarf script execution time: credentials don't have much time to
-get stale. If I had longer-lived processes, start-up time wouldn't be
-an issue and I'd just use the Clojure.
 
 The [com.cognitect/http-client][] used by aws-api automatically
 uncompresses S3 objects if they have the appropriate content-type
