@@ -2,6 +2,9 @@
 
 ## 0.8.84 / e551334 / 2023-12-02
 
+* Now requires babashka v1.1.170 or later.
+* No longer requires separate installation of babashka/spec.alpha (https://github.com/grzm/awyeah-api/issues/14).
+  Thanks, Dan Meyers, for the report!
 * Force HTTP client to use HTTP Version 1.1
   Fixes invalid request signing for AWS services that support HTTP 2 (https://github.com/grzm/awyeah-api/issues/8)
   Thanks, Josh Glover, for the detailed report!

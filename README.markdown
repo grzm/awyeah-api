@@ -54,15 +54,12 @@ Add to your `deps.edn` for Clojure or `bb.edn` for babashka:
 ```
 
 ### `bb.edn`
-Include [`org.babashka/spec.alpha`](https://github.com/babashka/spec.alpha)
 ``` clojure
 {:deps {com.cognitect.aws/endpoints {:mvn/version "1.1.12.504"}
         com.cognitect.aws/s3 {:mvn/version "848.2.1413.0"}
         com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
                              :git/sha "e5513349a2fd8a980a62bbe0d45a0d55bfcea141"
-                             :git/tag "v0.8.84"}
-        org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
-                                 :git/sha "1a841c4cc1d4f6dab7505a98ed2d532dd9d56b78"}}}
+                             :git/tag "v0.8.84"}}}
 ```
 
 ```clojure
