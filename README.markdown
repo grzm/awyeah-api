@@ -24,7 +24,7 @@ Cognitect-distributed library.
 
 ## Requirements
 
-Requires babashka v1.0.170 or later (vjava.util.concurrent.ThreadFactory support).
+Requires babashka v1.0.170 or later (java.util.concurrent.ThreadFactory support).
 
 ## deps
 ``` clojure
